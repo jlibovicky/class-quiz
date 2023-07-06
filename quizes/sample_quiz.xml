@@ -1,0 +1,16 @@
+<quiz title="Sample quiz forever">
+<question>
+    <text>What is the capital of France?</text>
+    <answer correct="true">Paris</answer>
+    <answer>London</answer>
+    <answer>Berlin</answer>
+    <answer>Madrid</answer>
+</question>
+<question>
+    <text>What is the correct equation for the __Pythagorean theorem?__</text>
+    <answer>$\sum_i^\infty \frac{1}{\log i}$</answer>
+    <answer>$a^2 + b^2 = e^2$</answer>
+    <answer correct="true">$a^2 + b^2 = c^2$</answer>
+    <answer>$a^2 + b^2 = f^2$</answer>
+</question>
+</quiz>
