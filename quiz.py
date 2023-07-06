@@ -9,11 +9,19 @@ class Question:
         self.answers = answers
         self.correct_answer = correct_answer
 
+    @property
+    def enum_answers(self):
+        return enumerate(self.answers)
+
 
 @dataclass
 class Quiz:
     title: str
     questions: List[Question]
+
+    @property
+    def enum_questions(self):
+        return enumerate(self.questions)
 
 
 def parse_quiz(file_name: str) -> Quiz:

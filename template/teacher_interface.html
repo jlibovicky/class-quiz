@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Quiz</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']]
+  }
+};
+</script>
+<script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+</head>
+<body>
+
+<div class="container">
+<h1>{{ quiz.title }}</h1>
+
+    {% for q_id, question in quiz.enum_questions: %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">{{ md(question.text)|safe }}</h5>
+                <div class="card-text">
+
+                    <table class="table table-striped">
+                    {% for a_id, answer in question.enum_answers: %}
+                        {% if a_id == question.correct_answer: %}
+                        <tr class="table-success">
+                            <td style="width: 20%">✓</td>
+                        {% else: %}
+                        <tr class="table-danger">
+                            <td style="width: 20%">{{ answer_counts[(q_id, a_id)] }}</td>
+                        {% endif %}
+                            <td>{{ md(answer)|safe }}</td>
+                        </tr>
+                    {% endfor %}
+                    </table>
+                </div>
+            </div>
+       </div>
+    {% endfor %}
+</div>
+
+</body>
+</html>

@@ -9,12 +9,15 @@ import os
 from apscheduler.schedulers.background import BackgroundScheduler
 import flask
 from flask import Flask
+from markdown import markdown
 
 from quiz import parse_quiz
-from quiz_to_html import generate_student_html, generate_teacher_html
 
+def md(text: str) -> str:
+    return markdown(text).removeprefix("<p>").removesuffix("</p>")
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='template')
+app.jinja_env.globals.update(md=md)
 
 # Stuff that needs to be shared between processes
 manager = Manager()
@@ -54,7 +57,7 @@ def hello_world():
 def quiz(quiz_id):
     if quiz_id not in quizes:
         return f"Quiz '{quiz_id}' not found.", 404
-    return generate_student_html(quizes[quiz_id])
+    return flask.render_template("student_interface.html", quiz=quizes[quiz_id])
 
 
 @app.route("/quiz/<path:quiz_id>/answer/<int:question_id>/<int:answer_id>")
@@ -75,15 +78,24 @@ def answer(quiz_id, question_id, answer_id):
 def answers(quiz_id):
     if quiz_id not in quizes:
         return f"Quiz '{quiz_id}' not found.", 404
-    return generate_teacher_html(
-            quiz_id, quizes[quiz_id], answer_counts.copy())
+
+    quiz_specific_counts = {}
+    for key, value in answer_counts.copy().items():
+        quiz_id_, question_id, answer_id = key.split("-")
+        if quiz_id_ == quiz_id:
+            quiz_specific_counts[int(question_id), int(answer_id)] = value
+
+    return flask.render_template(
+            "teacher_interface.html",
+            quiz=quizes[quiz_id], quiz_id=quiz_id,
+            answer_counts=quiz_specific_counts)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--host", default="0.0.0.0", help="Host to listen on")
     parser.add_argument("--port", default=5000, type=int, help="Port to listen on")
-    parser.add_argument("--quiz-dir", default="quizes", help="Directory to load quizes from")
+    parser.add_argument("--quiz-dir", default="quizzes", help="Directory to load quizes from")
     parser.add_argument(
         "--answer-counts-file", default="answer_counts.json",
         help="File to load answer counts from")
@@ -98,4 +110,4 @@ if __name__ == "__main__":
         quiz_id = os.path.splitext(file_name)[0]
         quizes[quiz_id] = parse_quiz(os.path.join(args.quiz_dir, file_name))
 
-    app.run(host=args.host, port=args.port)
+    app.run(host=args.host, port=args.port, debug=True)
