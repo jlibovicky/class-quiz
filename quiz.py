@@ -5,11 +5,11 @@ import os
 import xml.etree.ElementTree as ET
 
 
+@dataclass
 class Question:
-    def __init__(self, text: str, answers: List[str], correct_answer: int):
-        self.text = text
-        self.answers = answers
-        self.correct_answer = correct_answer
+    text: str
+    answers: List[str]
+    correct_answer: int
 
     @property
     def enum_answers(self):
@@ -21,10 +21,15 @@ class Quiz:
     title: str
     questions: List[Question]
     last_modified: datetime.datetime
+    path: str
 
     @property
     def enum_questions(self):
         return enumerate(self.questions)
+
+    def needs_update(self):
+        return self.last_modified < datetime.datetime.fromtimestamp(
+            os.path.getmtime(self.path))
 
 
 def parse_quiz(file_name: str) -> Quiz:
@@ -52,4 +57,4 @@ def parse_quiz(file_name: str) -> Quiz:
         answers = [answer.text for answer in question.findall("answer")]
         questions.append(Question(question_text, answers, correct_answer))
 
-    return Quiz(title, questions, last_modified)
+    return Quiz(title, questions, last_modified, file_name)

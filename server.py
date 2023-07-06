@@ -15,19 +15,19 @@ from markdown import markdown
 from quiz import parse_quiz
 
 
-def md(text: str) -> str:
+def html(text: str) -> str:
     return markdown(text).removeprefix("<p>").removesuffix("</p>")
 
 
 app = Flask(__name__, template_folder='template')
-app.jinja_env.globals.update(md=md)
+app.jinja_env.globals.update(html=html)
 auth = HTTPBasicAuth()
 
 
-correct_password = None
+CORRECT_PASSWORD = None
 @auth.verify_password
 def verify_password(_, password):
-    return password == correct_password
+    return password == CORRECT_PASSWORD
 
 
 # Stuff that needs to be shared between processes
@@ -36,15 +36,23 @@ answer_counts = manager.dict()
 last_save_timestamp = manager.Value("f", 0)
 last_answer_timestamp = manager.Value("f", 0)
 
+QUIZ_DIR = "quizzes"
 quizzes = {}
 
 
-answer_counts_file = "answer_counts.json"
+ANSWER_COUNTS_FILE = "answer_counts.json"
 
 def save_answer_counts():
     if last_answer_timestamp.value > last_save_timestamp.value:
-        with open(answer_counts_file, "w", encoding="utf-8") as f_json:
+        with open(ANSWER_COUNTS_FILE, "w", encoding="utf-8") as f_json:
             json.dump(answer_counts.copy(), f_json)
+        last_save_timestamp.value = datetime.datetime.now().timestamp()
+
+
+def load_answer_counts():
+    if os.path.exists(ANSWER_COUNTS_FILE):
+        with open(ANSWER_COUNTS_FILE, "r", encoding="utf-8") as f_json:
+            answer_counts.update(json.load(f_json))
         last_save_timestamp.value = datetime.datetime.now().timestamp()
 
 
@@ -58,12 +66,16 @@ def script():
     return flask.send_file("script.js")
 
 
-@app.route("/")
 @app.route("/quiz")
 @app.route("/answer_stats")
+@app.route("/")
 @auth.login_required
-def hello_world():
-    return flask.render_template("quiz_listing.html", quizzes=quizzes)
+def index():
+    needs_update = any(quiz.needs_update() for quiz in quizzes.values())
+    return flask.render_template(
+        "quiz_listing.html",
+        quizzes=quizzes,
+        needs_update=needs_update)
 
 
 @app.route("/quiz/<path:quiz_id>")
@@ -107,6 +119,22 @@ def answers(quiz_id):
             answer_counts=quiz_specific_counts)
 
 
+def load_quizes():
+    for file_name in os.listdir(QUIZ_DIR):
+        if not file_name.endswith(".xml"):
+            continue
+        q_id = os.path.splitext(file_name)[0]
+        print(f"Loading quiz '{q_id}'")
+        quizzes[q_id] = parse_quiz(os.path.join(args.quiz_dir, file_name))
+
+
+@app.route("/reload_quizzes")
+@auth.login_required
+def reload_quizes():
+    load_quizes()
+    return flask.redirect(flask.url_for("index"))
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -124,14 +152,11 @@ if __name__ == "__main__":
         help="Password for teacher interface")
     args = parser.parse_args()
 
-    correct_password = args.password
-    answer_counts_file = args.answer_counts_file
-    if os.path.exists(answer_counts_file):
-        with open(answer_counts_file, encoding="utf-8") as f_json:
-            answer_counts.update(json.load(f_json))
+    CORRECT_PASSWORD = args.password
+    QUIZ_DIR = args.quiz_dir
+    ANSWER_COUNTS_FILE = args.answer_counts_file
 
-    for file_name in os.listdir(args.quiz_dir):
-        q_id = os.path.splitext(file_name)[0]
-        quizzes[q_id] = parse_quiz(os.path.join(args.quiz_dir, file_name))
+    load_answer_counts()
+    load_quizes()
 
     app.run(host=args.host, port=args.port, debug=True)

@@ -1,4 +1,4 @@
-<quiz title="Sample quiz forever">
+<quiz title="Sample quiz">
 <question>
     <text>What is the capital of France?</text>
     <answer correct="true">Paris</answer>
@@ -12,5 +12,11 @@
     <answer>$a^2 + b^2 = e^2$</answer>
     <answer correct="true">$a^2 + b^2 = c^2$</answer>
     <answer>$a^2 + b^2 = f^2$</answer>
+</question>
+<question>
+    <text>How many moons does the Earth have?</text>
+    <answer>17</answer>
+    <answer>3</answer>
+    <answer correct="true">1</answer>
 </question>
 </quiz>

@@ -10,16 +10,28 @@
 <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
 
 <script>
+var qr_code = null;
 function make_qrcode(quiz_id) {
-    var qrcode = new QRCode(document.getElementById("qrcode"), {
-        text: window.location.origin + "/quiz/" + quiz_id,
-        width: 320,
-        height: 320,
-        colorDark : "#000000",
-        colorLight : "#ffffff",
-        correctLevel : QRCode.CorrectLevel.H
-    });
+    $("#qr_code_url").text(window.location.origin + "/quiz/" + quiz_id);
+    if (qr_code) {
+        qr_code.clear();
+        qr_code.makeCode(window.location.origin + "/quiz/" + quiz_id);
+    }
+    else {
+        qr_code = new QRCode(document.getElementById("qrcode"), {
+            text: window.location.origin + "/quiz/" + quiz_id,
+            width: 320,
+            height: 320,
+            colorDark : "#000000",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+        });
+    }
 }
+
+$(document).ready(function(){
+    make_qrcode("");
+});
 </script>
 
 </head>
@@ -28,17 +40,25 @@ function make_qrcode(quiz_id) {
 <div class="container">
 <h1>List of available quizzes</h1>
 
-    <div class="card mb-3">
+    <div class="card mb-3 text-center">
         <div class="card-body">
             <h5 class="card-title">QR Code for a quiz</h5>
             <div class="card-text">
-                Click on the link to generate a QR code for a quiz.
-                <div style="text-align: center; padding: 5pt">
-                    <div id="qrcode"></div>
-                </div>
+                <p>Click on the link to generate a QR code for a quiz.</p>
+                <p>Current QR code's URL: <tt id="qr_code_url"></tt></p>.
+                    <div id="qrcode" style="display: flex; justify-content: center; text-align: center;"></div>
             </div>
         </div>
     </div>
+
+    {% if needs_update: %}
+    <div class="card mb-3 text-center">
+        <div class="card-body">
+            <h5 class="card-title">Some XLM files are newer than the loaded quizzes!</h5>
+        <button type="button" class="btn btn-danger" onclick="window.location.href='/reload_quizzes'">Reload XLM files with quizes.</button>
+        </div>
+    </div>
+    {% endif %}
 
     <table class="table table-striped">
         <tr>

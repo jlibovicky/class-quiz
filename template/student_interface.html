@@ -41,10 +41,10 @@ button {
         <div id="collapse_{{ q_id }}" class="accordion-collapse collapse{% if q_id == 0: %} show {% endif %}" aria-labelledby="heading{{ q_id }}" data-bs-parent="#accordion">
             <div class="accordion-body">
 
-            <p>{{ md(question.text)|safe }}</p>
+            <p>{{ html(question.text)|safe }}</p>
 
             {% for a_id, answer in question.enum_answers: %}
-                <button type="button" class="btn btn-outline-primary w-100" onclick="toggleAnswer(this, {{ q_id }}, {{ a_id }})">{{ md(answer)|safe }}</button>
+                <button type="button" class="btn btn-outline-primary w-100" onclick="toggleAnswer(this, {{ q_id }}, {{ a_id }})">{{ html(answer)|safe }}</button>
             {% endfor %}
 
         </div>

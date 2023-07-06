@@ -25,7 +25,7 @@ MathJax = {
     {% for q_id, question in quiz.enum_questions: %}
         <div class="card mb-3">
             <div class="card-body">
-                <h5 class="card-title">{{ md(question.text)|safe }}</h5>
+                <h5 class="card-title">{{ html(question.text)|safe }}</h5>
                 <div class="card-text">
 
                     <table class="table table-striped">
@@ -37,7 +37,7 @@ MathJax = {
                         <tr class="table-danger">
                             <td style="width: 20%">{{ answer_counts[(q_id, a_id)] }}</td>
                         {% endif %}
-                            <td>{{ md(answer)|safe }}</td>
+                            <td>{{ html(answer)|safe }}</td>
                         </tr>
                     {% endfor %}
                     </table>
