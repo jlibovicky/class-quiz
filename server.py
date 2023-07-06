@@ -26,7 +26,7 @@ auth = HTTPBasicAuth()
 
 correct_password = None
 @auth.verify_password
-def verify_password(username, password):
+def verify_password(_, password):
     return password == correct_password
 
 
@@ -42,10 +42,9 @@ quizzes = {}
 answer_counts_file = "answer_counts.json"
 
 def save_answer_counts():
-    global last_save_timestamp
     if last_answer_timestamp.value > last_save_timestamp.value:
-        with open(answer_counts_file, "w") as f:
-            json.dump(answer_counts.copy(), f)
+        with open(answer_counts_file, "w", encoding="utf-8") as f_json:
+            json.dump(answer_counts.copy(), f_json)
         last_save_timestamp.value = datetime.datetime.now().timestamp()
 
 
@@ -71,7 +70,8 @@ def hello_world():
 def quiz(quiz_id):
     if quiz_id not in quizzes:
         return f"Quiz '{quiz_id}' not found.", 404
-    return flask.render_template("student_interface.html", quiz=quizzes[quiz_id])
+    return flask.render_template(
+            "student_interface.html", quiz=quizzes[quiz_id])
 
 
 @app.route("/quiz/<path:quiz_id>/answer/<int:question_id>/<int:answer_id>")
@@ -80,7 +80,8 @@ def answer(quiz_id, question_id, answer_id):
         return f"Quiz '{quiz_id}' not found.", 404
     if question_id >= len(quizzes[quiz_id].questions):
         return f"Question '{question_id}' not found.", 404
-    is_correct = quizzes[quiz_id].questions[question_id].correct_answer == answer_id
+    is_correct = (
+        quizzes[quiz_id].questions[question_id].correct_answer == answer_id)
 
     cache_key = f"{quiz_id}-{question_id}-{answer_id}"
     answer_counts[cache_key] = answer_counts.get(cache_key, 0) + 1
@@ -108,25 +109,29 @@ def answers(quiz_id):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--host", default="0.0.0.0", help="Host to listen on.")
-    parser.add_argument("--port", default=5000, type=int, help="Port to listen on.")
     parser.add_argument(
-        "--quiz-dir", default="quizzes", help="Directory to load quizzes from.")
+        "--host", default="0.0.0.0", help="Host to listen on.")
+    parser.add_argument(
+        "--port", default=5000, type=int, help="Port to listen on.")
+    parser.add_argument(
+        "--quiz-dir", default="quizzes",
+        help="Directory to load quizzes from.")
     parser.add_argument(
         "--answer-counts-file", default="answer_counts.json",
         help="File to load answer counts from")
     parser.add_argument(
-        "--password", default="password", help="Password for teacher interface")
+        "--password", default="password",
+        help="Password for teacher interface")
     args = parser.parse_args()
 
     correct_password = args.password
     answer_counts_file = args.answer_counts_file
     if os.path.exists(answer_counts_file):
-        with open(answer_counts_file) as f:
-            answer_counts.update(json.load(f))
+        with open(answer_counts_file, encoding="utf-8") as f_json:
+            answer_counts.update(json.load(f_json))
 
     for file_name in os.listdir(args.quiz_dir):
-        quiz_id = os.path.splitext(file_name)[0]
-        quizzes[quiz_id] = parse_quiz(os.path.join(args.quiz_dir, file_name))
+        q_id = os.path.splitext(file_name)[0]
+        quizzes[q_id] = parse_quiz(os.path.join(args.quiz_dir, file_name))
 
     app.run(host=args.host, port=args.port, debug=True)

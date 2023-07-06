@@ -28,14 +28,14 @@ class Quiz:
 
 
 def parse_quiz(file_name: str) -> Quiz:
-    last_modified = datetime.datetime.fromtimestamp(os.path.getmtime(file_name))
+    last_modified = datetime.datetime.fromtimestamp(
+        os.path.getmtime(file_name))
     tree = ET.parse(file_name)
     root = tree.getroot()
 
     assert root.tag == "quiz"
 
     title = root.attrib.get("title", "Quiz")
-    course = root.attrib.get("course")
 
     questions = []
     for question in root.findall("question"):
