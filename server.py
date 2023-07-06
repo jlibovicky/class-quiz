@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from typing import Tuple
 import argparse
 import json
 import datetime
@@ -26,30 +27,30 @@ auth = HTTPBasicAuth()
 
 CORRECT_PASSWORD = None
 @auth.verify_password
-def verify_password(_, password):
+def verify_password(_, password: str) -> bool:
     return password == CORRECT_PASSWORD
 
 
 # Stuff that needs to be shared between processes
 manager = Manager()
 answer_counts = manager.dict()
-last_save_timestamp = manager.Value("f", 0)
-last_answer_timestamp = manager.Value("f", 0)
+last_save_timestamp = manager.Value("f", 0.0)
+last_answer_timestamp = manager.Value("f", 0.0)
 
 QUIZ_DIR = "quizzes"
-quizzes = {}
+quizzes = manager.dict()
 
 
 ANSWER_COUNTS_FILE = "answer_counts.json"
 
-def save_answer_counts():
+def save_answer_counts() -> None:
     if last_answer_timestamp.value > last_save_timestamp.value:
         with open(ANSWER_COUNTS_FILE, "w", encoding="utf-8") as f_json:
             json.dump(answer_counts.copy(), f_json)
         last_save_timestamp.value = datetime.datetime.now().timestamp()
 
 
-def load_answer_counts():
+def load_answer_counts() -> None:
     if os.path.exists(ANSWER_COUNTS_FILE):
         with open(ANSWER_COUNTS_FILE, "r", encoding="utf-8") as f_json:
             answer_counts.update(json.load(f_json))
@@ -70,24 +71,28 @@ def script():
 @app.route("/answer_stats")
 @app.route("/")
 @auth.login_required
-def index():
-    needs_update = any(quiz.needs_update() for quiz in quizzes.values())
+def index() -> str:
+    quizzes_changed = any(quiz.needs_update() for quiz in quizzes.values())
+    xlm_files = set(
+        x.removesuffix(".xml") for x in os.listdir(QUIZ_DIR)
+        if x.endswith(".xml"))
+    new_quizzes = xlm_files - set(quizzes.keys())
     return flask.render_template(
         "quiz_listing.html",
         quizzes=quizzes,
-        needs_update=needs_update)
+        needs_update=quizzes_changed or new_quizzes)
 
 
 @app.route("/quiz/<path:quiz_id>")
-def quiz(quiz_id):
+def quiz(quiz_id: str) -> Tuple[str, int]:
     if quiz_id not in quizzes:
         return f"Quiz '{quiz_id}' not found.", 404
     return flask.render_template(
-            "student_interface.html", quiz=quizzes[quiz_id])
+            "student_interface.html", quiz=quizzes[quiz_id]), 200
 
 
 @app.route("/quiz/<path:quiz_id>/answer/<int:question_id>/<int:answer_id>")
-def answer(quiz_id, question_id, answer_id):
+def answer(quiz_id: str, question_id: int, answer_id: int) -> Tuple[str, int]:
     if quiz_id not in quizzes:
         return f"Quiz '{quiz_id}' not found.", 404
     if question_id >= len(quizzes[quiz_id].questions):
@@ -98,12 +103,12 @@ def answer(quiz_id, question_id, answer_id):
     cache_key = f"{quiz_id}-{question_id}-{answer_id}"
     answer_counts[cache_key] = answer_counts.get(cache_key, 0) + 1
     last_answer_timestamp.value = datetime.datetime.now().timestamp()
-    return str(is_correct)
+    return str(is_correct), 200
 
 
 @app.route("/answer_stats/<path:quiz_id>")
 @auth.login_required
-def answers(quiz_id):
+def answers(quiz_id: str) -> Tuple[str, int]:
     if quiz_id not in quizzes:
         return f"Quiz '{quiz_id}' not found.", 404
 
@@ -116,10 +121,10 @@ def answers(quiz_id):
     return flask.render_template(
             "teacher_interface.html",
             quiz=quizzes[quiz_id], quiz_id=quiz_id,
-            answer_counts=quiz_specific_counts)
+            answer_counts=quiz_specific_counts), 200
 
 
-def load_quizes():
+def load_quizes() -> None:
     for file_name in os.listdir(QUIZ_DIR):
         if not file_name.endswith(".xml"):
             continue
