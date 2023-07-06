@@ -1,17 +1,26 @@
 # class-quiz
-A simple web app for multi-choice quizzes that I give in my classes. Open-source and lightweight Kahhot alternative. Written in Python using Flask.
 
-It has an anonymous student interface that displays the quiz in a smartphone-friendly format and a teacher interface that shows statistics of incorrect answers meant to be presented to the class.
+A simple web app for multi-choice quizzes that I give in my classes.
+Open-source and lightweight Kahhot alternative. Written in Python using Flask.
+
+It has an anonymous student interface that displays the quiz in a
+smartphone-friendly format and a teacher interface that shows statistics of
+incorrect answers meant to be presented to the class.
 
 ## Running the server
 
 ```bash
-python3 server.py --host 0.0.0.0 --port 5000 --quiz-dir quizzes
+python3 server.py --host 0.0.0.0 --port 5000 --quiz-dir quizzes --password your-password
 ```
 
-The `quizzes` directory contains XLM files with particular quizzes.
-The student interface is then available under `<root>/quiz/<quiz_id>` where `<quiz_id>` is the file name without the extension.
-The teacher interface is under `<root>/answer_stats/sample_quiz`.
+The `quizzes` directory contains XLM files with particular quizzes. The
+student interface is then available under `<root>/quiz/<quiz_id>` where
+`<quiz_id>` is the file name without the extension.
+
+The teacher interface is protected by a password. Quiz statistics for a
+particular quiz are under `<root>/answer_stats/<quiz_id>`. The root address
+shows an overview of available quizzes and allows generating a QR code that
+could pasted into slides.
 
 ## Defining a quiz
 

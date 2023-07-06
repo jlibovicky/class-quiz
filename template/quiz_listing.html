@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Quiz</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+
+<script>
+function make_qrcode(quiz_id) {
+    var qrcode = new QRCode(document.getElementById("qrcode"), {
+        text: window.location.origin + "/quiz/" + quiz_id,
+        width: 320,
+        height: 320,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+    });
+}
+</script>
+
+</head>
+<body>
+
+<div class="container">
+<h1>List of available quizzes</h1>
+
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">QR Code for a quiz</h5>
+            <div class="card-text">
+                Click on the link to generate a QR code for a quiz.
+                <div style="text-align: center; padding: 5pt">
+                    <div id="qrcode"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <table class="table table-striped">
+        <tr>
+            <th>Quiz ID</th>
+            <th>Title</th>
+            <th>Modified</th>
+            <th>Quiz link</th>
+            <th>Answer stats link</th>
+            <th>QR Code</th>
+        </tr>
+        {% for quiz_id, quiz in quizzes.items(): %}
+        <tr>
+            <td><tt>{{ quiz_id }}</tt></td>
+            <td>{{ quiz.title }}</td>
+            <td>{{ quiz.last_modified }}</td>
+            <td><a href="/quiz/{{ quiz_id }}">Quiz</a></td>
+            <td><a href="/answer_stats/{{ quiz_id }}">Answers</a></td>
+            <td><a href="#" onclick="make_qrcode('{{ quiz_id }}');">QR Code</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</div>
+
+</body>
+</html>

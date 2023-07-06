@@ -1,5 +1,7 @@
 from typing import List
 from dataclasses import dataclass
+import datetime
+import os
 import xml.etree.ElementTree as ET
 
 
@@ -18,6 +20,7 @@ class Question:
 class Quiz:
     title: str
     questions: List[Question]
+    last_modified: datetime.datetime
 
     @property
     def enum_questions(self):
@@ -25,6 +28,7 @@ class Quiz:
 
 
 def parse_quiz(file_name: str) -> Quiz:
+    last_modified = datetime.datetime.fromtimestamp(os.path.getmtime(file_name))
     tree = ET.parse(file_name)
     root = tree.getroot()
 
@@ -48,4 +52,4 @@ def parse_quiz(file_name: str) -> Quiz:
         answers = [answer.text for answer in question.findall("answer")]
         questions.append(Question(question_text, answers, correct_answer))
 
-    return Quiz(title, questions)
+    return Quiz(title, questions, last_modified)
