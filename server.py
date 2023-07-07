@@ -69,6 +69,7 @@ def script():
 
 @app.route("/quiz")
 @app.route("/answer_stats")
+@app.route("/timer")
 @app.route("/")
 @auth.login_required
 def index() -> str:
@@ -138,6 +139,15 @@ def load_quizes() -> None:
 def reload_quizes():
     load_quizes()
     return flask.redirect(flask.url_for("index"))
+
+
+@app.route("/timer/<path:quiz_id>")
+@auth.login_required
+def timer(quiz_id: str) -> Tuple[str, int]:
+    if quiz_id not in quizzes:
+        return f"Quiz '{quiz_id}' not found.", 404
+    return flask.render_template(
+            "timer.html", quiz=quizzes[quiz_id], quiz_id=quiz_id), 200
 
 
 if __name__ == "__main__":

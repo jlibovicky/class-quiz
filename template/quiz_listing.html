@@ -67,7 +67,8 @@ $(document).ready(function(){
             <th>Modified</th>
             <th>Quiz link</th>
             <th>Answer stats link</th>
-            <th>QR Code</th>
+            <th>Show QR Code</th>
+            <th>Timer Page</th>
         </tr>
         {% for quiz_id, quiz in quizzes.items(): %}
         <tr>
@@ -77,6 +78,13 @@ $(document).ready(function(){
             <td><a href="/quiz/{{ quiz_id }}">Quiz</a></td>
             <td><a href="/answer_stats/{{ quiz_id }}">Answers</a></td>
             <td><a href="#" onclick="make_qrcode('{{ quiz_id }}');">QR Code</a></td>
+            <td>
+                <a href="/timer/{{ quiz_id }}?minutes=1">1m</a> |
+                <a href="/timer/{{ quiz_id }}?minutes=2">2m</a> |
+                <a href="/timer/{{ quiz_id }}?minutes=3">3m</a> |
+                <a href="/timer/{{ quiz_id }}?minutes=4">4m</a> |
+                <a href="/timer/{{ quiz_id }}?minutes=5">5m</a>
+            </td>
         </tr>
         {% endfor %}
     </table>

@@ -22,13 +22,18 @@ particular quiz are under `<root>/answer_stats/<quiz_id>`. The root address
 shows an overview of available quizzes and allows generating a QR code that
 could pasted into slides.
 
+The page `<root>/timer/<quiz_id>?minutes=<minutes>` shows a page with a QR code
+leadning to the student interface. After the specified time is over, it shows
+the answer statistics.
+
 ## Defining a quiz
 
-Quizzes are defined in an XLM format. All text fields are written using Markdown.
-Math can be written using LaTeX in dollar signs using [MathJax](https://www.mathjax.org/).
+Quizzes are defined in an XLM format. All text fields are written using
+Markdown.  Math can be written using LaTeX in dollar signs using
+[MathJax](https://www.mathjax.org/).
 
 ```xlm
-<quiz title="Sample quiz forever">
+<quiz title="Sample quiz">
   <question>
       <text>What is the capital of France?</text>
       <answer correct="true">Paris</answer>

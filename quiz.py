@@ -42,7 +42,7 @@ def parse_quiz(file_name: str) -> Quiz:
 
     title = root.attrib.get("title", "Quiz")
 
-    questions = []
+    questions: List[Question] = []
     for question in root.findall("question"):
         question_text = question.find("text").text
         answers = []
