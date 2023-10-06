@@ -1,0 +1,57 @@
+<quiz title="Intro to ML: Lecture 1">
+    <question>
+        <text>What is the difference between classification and regression?</text>
+        <answer correct="true">Classification predicts **discrete labels**, regression predicts **continuous values**.</answer>
+        <answer>Classification predicts **continuous values**, regression predicts **discrete labels**.</answer>
+        <answer>They are different views of **the same problem**, one can be transformed into the other.</answer>
+        <answer>Classification is **supervised** learning, regression is **unsupervised** learning.</answer>
+    </question>
+
+    <question>
+        <text>What is the difference between supervised and unsupervised learning?</text>
+        <answer>Unsupervised learning is non-parametric.</answer>
+        <answer>Supervised learning is non-parametric.</answer>
+        <answer correct="true">Supervised learning uses labeled data, unsupervised learning uses unlabeled data.</answer>
+        <answer>Learning without supervision is impossible.</answer>
+    </question>
+
+    <question>
+        <text>Why is linear regression called linear even when we use to fit polynomial curves?</text>
+        <answer correct="true">Because it fits a hyperplane in the polynomial feature space..</answer>
+        <answer>It is **no longer linear** when we use polynomial features.</answer>
+        <answer>It is linear because it has **linear complexity**.</answer>
+        <answer>It is linear because it uses** linear algebra** to solve the problem.</answer>
+    </question>
+
+    <question>
+        <text>What is overfitting?</text>
+        <answer>When the model always predicts the same value regardless of the input.</answer>
+        <answer>When the model is too simple to fit the data.</answer>
+        <answer correct="true">When the model fits the training data too well, but fails on test data.</answer>
+        <answer>When the model works perfectly both on training and test data.</answer>
+    </question>
+
+    <question>
+        <answer correct="true">$\mathbf{w} \leftarrow (\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T\mathbf{t}$</answer>
+        <text>An equation that optimizes $||\mathbf{X}\mathbf{w} - \mathbf{t}||^2$ for $\textbf{w}$ is:</text>
+        <answer>$\mathbf{w} \leftarrow (\mathbf{X}^T\mathbf{X})(\mathbf{X}^T)^{-1}\mathbf{t}$</answer>
+        <answer>It usually has no solution because $\textbf{X}$ is almost never regular.</answer>
+        <answer>It only has a degenerate solution $\textbf{w} = \textbf{0}$ we do not add bias term $b$.</answer>
+    </question>
+
+    <question>
+        <text>Why is the bias term $b$ missing in the previous equation?</text>
+        <answer correct="true">It is not missing, it is included in $\mathbf{w}$.</answer>
+        <answer>It is missing because it is always zero.</answer>
+        <answer>It is missing because it is always one.</answer>
+        <answer>This a different notation, $b = \mathbf{w}$ in this case.</answer>
+    </question>
+
+    <question>
+        <text>What is the role of the bias term $b$ in $\mathbf{x}^T\mathbf{w} + b$?</text>
+        <answer>It is the **slope** of the line (or the hyperplane) fitted by the model.</answer>
+        <answer correct="true">It is the **intercept** of the line (or the hyperplane) fitted by the model.</answer>
+        <answer>It is there to ensure that the predicted value is **always positive**.</answer>
+        <answer>It is there to ensure that the predicted hyperplane **passes through the origin**.</answer>
+    </question>
+</quiz>
