@@ -75,15 +75,15 @@ $(document).ready(function(){
             <td><tt>{{ quiz_id }}</tt></td>
             <td>{{ quiz.title }}</td>
             <td>{{ quiz.last_modified }}</td>
-            <td><a href="/quiz/{{ quiz_id }}">Quiz</a></td>
-            <td><a href="/answer_stats/{{ quiz_id }}">Answers</a></td>
+            <td><a href="quiz/{{ quiz_id }}">Quiz</a></td>
+            <td><a href="answer_stats/{{ quiz_id }}">Answers</a></td>
             <td><a href="#" onclick="make_qrcode('{{ quiz_id }}');">QR Code</a></td>
             <td>
-                <a href="/timer/{{ quiz_id }}?minutes=1">1m</a> |
-                <a href="/timer/{{ quiz_id }}?minutes=2">2m</a> |
-                <a href="/timer/{{ quiz_id }}?minutes=3">3m</a> |
-                <a href="/timer/{{ quiz_id }}?minutes=4">4m</a> |
-                <a href="/timer/{{ quiz_id }}?minutes=5">5m</a>
+                <a href="timer/{{ quiz_id }}?minutes=1">1m</a> |
+                <a href="timer/{{ quiz_id }}?minutes=2">2m</a> |
+                <a href="timer/{{ quiz_id }}?minutes=3">3m</a> |
+                <a href="timer/{{ quiz_id }}?minutes=4">4m</a> |
+                <a href="timer/{{ quiz_id }}?minutes=5">5m</a>
             </td>
         </tr>
         {% endfor %}
