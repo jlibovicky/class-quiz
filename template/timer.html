@@ -35,8 +35,10 @@ MathJax = {
         $("#timer").hide();
         $("#start").text("Start timer (" + minutes + " min)");
 
+	let quiz_url = new URL("../quiz/{{quiz_id}}", document.baseURI).href;
+
         qr_code = new QRCode(document.getElementById("qrcode"), {
-            text: window.location.origin + "/quiz/{{quiz_id}}",
+            text: quiz_url,
             width: 320,
             height: 320,
             colorDark : "#000000",
@@ -64,6 +66,8 @@ MathJax = {
             }, 1000);
             $("#start").hide();
         });
+
+	$("#url").text(quiz_url);
     });
 </script>
 </head>
@@ -72,6 +76,7 @@ MathJax = {
 
 <div class="container text-center">
     <h1>{{quiz.title}}</h1>
+    <h2 id="url" style="font-family: monospace"></h2>
     <div id="qrcode" style="display: flex; justify-content: center; text-align: center; margin: 3em"></div>
     <div id="timer" style="font-size: 4em; text-align: center">{{ minutes }}:{{ seconds }}</div>
     <button type="button" id="start" class="btn btn-primary" style="width: 100%; margin-top: 1em;"> Start </button>

@@ -1,4 +1,4 @@
-<quiz title="Intro to ML: Lecture 1">
+<quiz title="Intro to ML: Lecture 1 Recap">
     <question>
         <text>What is the difference between classification and regression?</text>
         <answer correct="true">Classification predicts **discrete labels**, regression predicts **continuous values**.</answer>
@@ -16,8 +16,8 @@
     </question>
 
     <question>
-        <text>Why is linear regression called linear even when we use to fit polynomial curves?</text>
-        <answer correct="true">Because it fits a hyperplane in the polynomial feature space..</answer>
+        <text>Why is linear regression called linear even when we use it to fit polynomial curves?</text>
+        <answer correct="true">Because it fits a **hyperplane** in the polynomial feature space.</answer>
         <answer>It is **no longer linear** when we use polynomial features.</answer>
         <answer>It is linear because it has **linear complexity**.</answer>
         <answer>It is linear because it uses** linear algebra** to solve the problem.</answer>
@@ -36,7 +36,7 @@
         <text>An equation that optimizes $||\mathbf{X}\mathbf{w} - \mathbf{t}||^2$ for $\textbf{w}$ is:</text>
         <answer>$\mathbf{w} \leftarrow (\mathbf{X}^T\mathbf{X})(\mathbf{X}^T)^{-1}\mathbf{t}$</answer>
         <answer>It usually has no solution because $\textbf{X}$ is almost never regular.</answer>
-        <answer>It only has a degenerate solution $\textbf{w} = \textbf{0}$ we do not add bias term $b$.</answer>
+        <answer>It only has a degenerate solution $\textbf{w} = \textbf{0}$ when we do not add bias term $b$.</answer>
     </question>
 
     <question>

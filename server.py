@@ -150,6 +150,12 @@ def timer(quiz_id: str) -> Tuple[str, int]:
             "timer.html", quiz=quizzes[quiz_id], quiz_id=quiz_id), 200
 
 
+@app.route("/quit")
+def quit():
+     os._exit(0)
+
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -174,4 +180,4 @@ if __name__ == "__main__":
     load_answer_counts()
     load_quizes()
 
-    app.run(host=args.host, port=args.port, debug=True)
+    app.run(host=args.host, port=args.port, debug=False)

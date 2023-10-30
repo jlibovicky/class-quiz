@@ -1,0 +1,65 @@
+<quiz title="Intro to ML: Lecture 2 Recap">
+	<question>
+		<text>What is regularization?</text>
+
+		<answer>Increasing model capacity, so it better fits the training data.</answer>
+		<answer>Data preprocessing that makes sure that the training data matrix $\mathbf{X}$ is regular.</answer>
+		<answer>A different name for preventing underfitting.</answer>
+		<answer correct="true">Decreasing model capacity to avoid overfitting.</answer>
+	</question>
+
+		
+	<question>
+		<text>Hyperparameters</text>
+
+		<answer>are an order of magnitude bigger than the standard parameters.</answer>
+		<answer correct="true">need to be decided before optimization on training data.</answer>
+		<answer>are a results of training on validation data.</answer>
+		<answer>are the best possible set of parameters that we can reach during training.</answer>
+	</question>
+
+	<question>
+		<text>Select a false statement about $L^2$-regularization with linear regression.</text>
+
+		<answer correct="true">The higher the $\lambda$ value, the lower the training error.</answer>
+		<answer>We add $\frac{\lambda}{2}||w||^2$ to the error function.</answer>
+		<answer>We add $\frac{\lambda}{2} \sum_j w_j^2$ to the error function.</answer>
+		<answer>Linear regression with $L^2$-regularization is sometimes called the Ridge regression.</answer>
+	</question>
+
+	<question>
+		<text>What is a correct equation for variance of a discrete random variable?</text>
+
+		<answer correct="true">$\operatorname{Var}(x) = \mathbb{E}[x^2] - (\mathbb{E}[x])^2$</answer>
+		<answer>$\operatorname{Var}(x) = \left(\mathbb{E}[x^2]\right)^2$</answer>
+		<answer>$\operatorname{Var}(x) = \mathbb{E}\left[ x - \mathbb{E}[x^2] \right]$</answer>
+		<answer>$\operatorname{Var}(x) = \mathbb{E}\left[ 2x \mathbb{E}[x] \right]$</answer>
+	</question>
+
+	<question>
+		<text>What holds about comparing exact solution and SGD solution of linear regression:</text>
+
+		<answer>Unlike exact solution, SGD is not guaranteed to find an optimal solution on the training data.</answer>
+		<answer correct="true">With SGD, we can select a good solution on validation data when doing early stopping.</answer>
+		<answer>We cannot compute the exact solution for polynomial features. In that case, we must use SGD.</answer>
+		<answer>The exact solution fails when using $L^2$-regularization because $\mathbf{X^T X + \lambda\mathbf{I}}$ is always singular, so we have to use SGD.</answer>
+	</question>
+
+	<question>
+		<text>SGD is guaranteed to converge.</text>
+
+		<answer>Only if the sum of learning rates $\alpha_i$ is finite but monotonically decreasing.</answer>
+		<answer>Only for convex functions. Otherwise, it oscillates between multiple local optima.</answer>
+		<answer correct="true">To a local optimum of a continuous function if $\sum_i \alpha_i$ is infinite but $\sum_i \alpha_i^2$ is finite.</answer>
+		<answer>To the global optimum of a convex function regardless of the learning rate.</answer>
+	</question>
+
+	<question>
+		<text>Select an incorrect statement about learning curves.</text>
+
+		<answer>Learning curves show the values of the train and validation errors during the SGD training.</answer>
+		<answer correct="true">The train and validation curve can never cross. If they do, there is an implementation bug.</answer>
+		<answer>They can be used to visually check if the model is overfitting.</answer>
+		<answer>They typically do not show the error on the test data. We should not choose the model based on test data, but use the validation data instead.</answer>
+	</question>
+</quiz>

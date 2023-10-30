@@ -1,0 +1,56 @@
+<quiz title="Intro to ML: Lecture 4 Recap">
+	<question>
+		<text>The weight update in SGD for logistic regression is</text>
+
+		<answer correct="true">$(y(\mathbf{x}_i, \mathbf{w}) - t_i)\mathbf{x}_i$</answer>
+		<answer>$\sigma(\mathbf{x}_i^T\mathbf{w})\left(1 - \sigma(\mathbf{x}_i^T) \right)\mathbf{x}_i$</answer>
+		<answer>$\nabla_\mathbf{x} -\log \sigma(\mathbf{x}_i^T\mathbf{w})^t_i \cdot (1 - \sigma(\mathbf{x}_i^T\mathbf{w}))^{1 - t_i}$</answer>
+		<answer>$-t_i\mathbf{x}_i$ if $t_i \mathbf{x}^T\mathbf{w} &lt; 0$</answer>
+
+	</question>
+
+	<question>
+		<text>Linear regression trained with the mean squared error assumes that:</text>
+
+		<answer>The variance of the error is zero for all inputs.</answer>
+		<answer correct="true">The variance of the error is constant for all inputs.</answer>
+		<answer>The variance of the error is linear with respect to the input vector size $||x||$.</answer>
+		<answer>The variance of the error is logarithmic with respect to the input vector size $||x||$.</answer>
+	</question>
+
+	<question>
+		<text>Select a false statement about the softmax function</text>
+
+		<answer>$\operatorname{softmax}(\mathbf{x}) = \frac{\exp \mathbf{x}}{\sum_i \exp x_i}$</answer>
+		<answer>Softmax is invariant towards shift: $\operatorname{softmax}(\mathbf{x} + c) = \operatorname{softmax}(\mathbf{x})$</answer>
+		<answer correct="true">Softmax is invariant towards shift: $\operatorname{softmax}(\mathbf{x} + c) = \operatorname{softmax}(\mathbf{x})$ + c</answer>
+		<answer>Softmax yields a categorical distribution.</answer>
+	</question>
+
+	<question>
+		<text>Generalized linear models</text>
+
+		<answer correct="true">Are a special case of neural networks with zero hidden layers.</answer>
+		<answer>Always have the optimum analytical solution on training data.</answer>
+		<answer>With $D$-dimensional input have the same number of parameters as a multi-layer perceptron with $D$-dimensional input and $D$ hidden units.</answer>
+		<answer>Can only work with linear features, they do not converge with polynomial features.</answer>
+	</question>
+
+	<question>
+		<text>The hidden layer of MLP $\mathbf{h}$</text>
+
+		<answer>Can be interpreted as automatic features extraction from $\mathbf{x}$. Vector $\mathbf{h}$ is a logarithm of a multinomial distribution over the so called hidden features.</answer>
+		<answer correct="true">$\mathbf{h} = a(\mathbf{x}^T\mathbf{W} + b)$ where $a$ is the activation function.</answer>
+		<answer>$\mathbf{h} = \lambda\mathbf{x}_A + (1 - \lambda)\mathbf{x}_B$ for all $A$, $B$ such that $t_A = t_B$ (i.e., $\mathbf{x}_A$ and $\mathbf{x}_B$ belong to the same class).</answer>
+		<answer>Is only used during training. At inference time, it is removed (hidden) and MLP behaves as a linear model.</answer>
+	</question>
+
+	<question>
+		<text>Select a false statement about activation functions in multi-layer perceptron.</text>
+
+		<answer>The activation functions must be continuous (almost everywhere), so we can use SGD for training.</answer>
+		<answer>The most frequently used activation functions for hidden layers are $\tanh$ and $\operatorname{ReLU}$.</answer>
+		<answer>One of the problems with sigmoid as activation function is that $\sigma'(0) = \frac{1}{4}$.</answer>
+		<answer correct="true">Identity is the best activation function because it is has a constant derivation. This helps avoiding gradients smaller than 1.</answer>
+	</question>
+</quiz>

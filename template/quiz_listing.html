@@ -12,14 +12,15 @@
 <script>
 var qr_code = null;
 function make_qrcode(quiz_id) {
-    $("#qr_code_url").text(window.location.origin + "/quiz/" + quiz_id);
+    let quiz_url = new URL("../quiz/" + quiz_id, document.baseURI).href;
+    $("#qr_code_url").text(quiz_url);
     if (qr_code) {
         qr_code.clear();
-        qr_code.makeCode(window.location.origin + "/quiz/" + quiz_id);
+        qr_code.makeCode(quiz_url);
     }
     else {
         qr_code = new QRCode(document.getElementById("qrcode"), {
-            text: window.location.origin + "/quiz/" + quiz_id,
+            text: quiz_url,
             width: 320,
             height: 320,
             colorDark : "#000000",
@@ -55,7 +56,7 @@ $(document).ready(function(){
     <div class="card mb-3 text-center">
         <div class="card-body">
             <h5 class="card-title">Some XLM files are newer than the loaded quizzes!</h5>
-        <button type="button" class="btn btn-danger" onclick="window.location.href='/reload_quizzes'">Reload XLM files with quizes.</button>
+        <button type="button" class="btn btn-danger" onclick="window.location.href='./reload_quizzes'">Reload XLM files with quizes.</button>
         </div>
     </div>
     {% endif %}
