@@ -2,10 +2,10 @@
 	<question>
 		<text>The weight update in SGD for logistic regression is</text>
 
-		<answer correct="true">$(y(\mathbf{x}_i, \mathbf{w}) - t_i)\mathbf{x}_i$</answer>
-		<answer>$\sigma(\mathbf{x}_i^T\mathbf{w})\left(1 - \sigma(\mathbf{x}_i^T) \right)\mathbf{x}_i$</answer>
-		<answer>$\nabla_\mathbf{x} -\log \sigma(\mathbf{x}_i^T\mathbf{w})^t_i \cdot (1 - \sigma(\mathbf{x}_i^T\mathbf{w}))^{1 - t_i}$</answer>
-		<answer>$-t_i\mathbf{x}_i$ if $t_i \mathbf{x}^T\mathbf{w} &lt; 0$</answer>
+		<answer correct="true">$(y(\boldsymbol{x}_i, \boldsymbol{w}) - t_i)\boldsymbol{x}_i$</answer>
+		<answer>$\sigma(\boldsymbol{x}_i^T\boldsymbol{w})\left(1 - \sigma(\boldsymbol{x}_i^T) \right)\boldsymbol{x}_i$</answer>
+		<answer>$\nabla_\boldsymbol{x} -\log \sigma(\boldsymbol{x}_i^T\boldsymbol{w})^t_i \cdot (1 - \sigma(\boldsymbol{x}_i^T\boldsymbol{w}))^{1 - t_i}$</answer>
+		<answer>$-t_i\boldsymbol{x}_i$ if $t_i \boldsymbol{x}^T\boldsymbol{w} &lt; 0$</answer>
 
 	</question>
 
@@ -21,9 +21,9 @@
 	<question>
 		<text>Select a false statement about the softmax function</text>
 
-		<answer>$\operatorname{softmax}(\mathbf{x}) = \frac{\exp \mathbf{x}}{\sum_i \exp x_i}$</answer>
-		<answer>Softmax is invariant towards shift: $\operatorname{softmax}(\mathbf{x} + c) = \operatorname{softmax}(\mathbf{x})$</answer>
-		<answer correct="true">Softmax is invariant towards shift: $\operatorname{softmax}(\mathbf{x} + c) = \operatorname{softmax}(\mathbf{x})$ + c</answer>
+		<answer>$\operatorname{softmax}(\boldsymbol{x}) = \frac{\exp \boldsymbol{x}}{\sum_i \exp x_i}$</answer>
+		<answer>Softmax is invariant towards shift: $\operatorname{softmax}(\boldsymbol{x} + c) = \operatorname{softmax}(\boldsymbol{x})$</answer>
+		<answer correct="true">Softmax is invariant towards shift: $\operatorname{softmax}(\boldsymbol{x} + c) = \operatorname{softmax}(\boldsymbol{x})$ + c</answer>
 		<answer>Softmax yields a categorical distribution.</answer>
 	</question>
 
@@ -37,11 +37,11 @@
 	</question>
 
 	<question>
-		<text>The hidden layer of MLP $\mathbf{h}$</text>
+		<text>The hidden layer of MLP $\boldsymbol{h}$</text>
 
-		<answer>Can be interpreted as automatic features extraction from $\mathbf{x}$. Vector $\mathbf{h}$ is a logarithm of a multinomial distribution over the so called hidden features.</answer>
-		<answer correct="true">$\mathbf{h} = a(\mathbf{x}^T\mathbf{W} + b)$ where $a$ is the activation function.</answer>
-		<answer>$\mathbf{h} = \lambda\mathbf{x}_A + (1 - \lambda)\mathbf{x}_B$ for all $A$, $B$ such that $t_A = t_B$ (i.e., $\mathbf{x}_A$ and $\mathbf{x}_B$ belong to the same class).</answer>
+		<answer>Can be interpreted as automatic features extraction from $\boldsymbol{x}$. Vector $\boldsymbol{h}$ is a logarithm of a multinomial distribution over the so called hidden features.</answer>
+		<answer correct="true">$\boldsymbol{h} = a(\boldsymbol{x}^T\boldsymbol{W} + b)$ where $a$ is the activation function.</answer>
+		<answer>$\boldsymbol{h} = \lambda\boldsymbol{x}_A + (1 - \lambda)\boldsymbol{x}_B$ for all $A$, $B$ such that $t_A = t_B$ (i.e., $\boldsymbol{x}_A$ and $\boldsymbol{x}_B$ belong to the same class).</answer>
 		<answer>Is only used during training. At inference time, it is removed (hidden) and MLP behaves as a linear model.</answer>
 	</question>
 

@@ -32,23 +32,23 @@
     </question>
 
     <question>
-        <answer correct="true">$\mathbf{w} \leftarrow (\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T\mathbf{t}$</answer>
-        <text>An equation that optimizes $||\mathbf{X}\mathbf{w} - \mathbf{t}||^2$ for $\textbf{w}$ is:</text>
-        <answer>$\mathbf{w} \leftarrow (\mathbf{X}^T\mathbf{X})(\mathbf{X}^T)^{-1}\mathbf{t}$</answer>
+        <answer correct="true">$\boldsymbol{w} \leftarrow (\boldsymbol{X}^T\boldsymbol{X})^{-1}\boldsymbol{X}^T\boldsymbol{t}$</answer>
+        <text>An equation that optimizes $||\boldsymbol{X}\boldsymbol{w} - \boldsymbol{t}||^2$ for $\textbf{w}$ is:</text>
+        <answer>$\boldsymbol{w} \leftarrow (\boldsymbol{X}^T\boldsymbol{X})(\boldsymbol{X}^T)^{-1}\boldsymbol{t}$</answer>
         <answer>It usually has no solution because $\textbf{X}$ is almost never regular.</answer>
         <answer>It only has a degenerate solution $\textbf{w} = \textbf{0}$ when we do not add bias term $b$.</answer>
     </question>
 
     <question>
         <text>Why is the bias term $b$ missing in the previous equation?</text>
-        <answer correct="true">It is not missing, it is included in $\mathbf{w}$.</answer>
+        <answer correct="true">It is not missing, it is included in $\boldsymbol{w}$.</answer>
         <answer>It is missing because it is always zero.</answer>
         <answer>It is missing because it is always one.</answer>
-        <answer>This a different notation, $b = \mathbf{w}$ in this case.</answer>
+        <answer>This a different notation, $b = \boldsymbol{w}$ in this case.</answer>
     </question>
 
     <question>
-        <text>What is the role of the bias term $b$ in $\mathbf{x}^T\mathbf{w} + b$?</text>
+        <text>What is the role of the bias term $b$ in $\boldsymbol{x}^T\boldsymbol{w} + b$?</text>
         <answer>It is the **slope** of the line (or the hyperplane) fitted by the model.</answer>
         <answer correct="true">It is the **intercept** of the line (or the hyperplane) fitted by the model.</answer>
         <answer>It is there to ensure that the predicted value is **always positive**.</answer>

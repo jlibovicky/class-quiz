@@ -1,12 +1,12 @@
 <quiz title="Intro to ML: Lecture 3 Recap">
 
 	<question>
-		<text>Two sets of $D$-dimensional points $\mathbf{X_1}$ and $\mathbf{X_2}$ are linearly separable</text>
+		<text>Two sets of $D$-dimensional points $\boldsymbol{X_1}$ and $\boldsymbol{X_2}$ are linearly separable</text>
 
-		<answer correct="true">If there exist $\mathbf{w}$, such that $\mathbf{x}^T\mathbf{w} > 0$ for each $\mathbf{x} \in \mathbf{X}_1$ and $\mathbf{x}^T\mathbf{w} &lt; 0$ for each $\mathbf{x} \in \mathbf{X}_2$.</answer>
-		<answer>If there exist $\mathbf{w}$ such that all points from $\mathbf{X}_1$ and $\mathbf{X}_2$ lie on a hyperplane defined by $\mathbf{x}^T\mathbf{w}$.</answer>
-		<answer>If there exist a projection matrix $\mathbf{W}$ such that for each $\mathbf{x} \in \mathbf{X}_1$ there exists $\bar{\mathbf{x}} \in \mathbf{X}_2$, such that $\mathbf{x}\mathbf{W} = \bar{\mathbf{x}}$</answer>
-		<answer>If linear regressions fit for $\mathbf{X}_1$ and $\mathbf{X}_2$ have the same parameters.</answer>
+		<answer correct="true">If there exist $\boldsymbol{w}$, such that $\boldsymbol{x}^T\boldsymbol{w} > 0$ for each $\boldsymbol{x} \in \boldsymbol{X}_1$ and $\boldsymbol{x}^T\boldsymbol{w} &lt; 0$ for each $\boldsymbol{x} \in \boldsymbol{X}_2$.</answer>
+		<answer>If there exist $\boldsymbol{w}$ such that all points from $\boldsymbol{X}_1$ and $\boldsymbol{X}_2$ lie on a hyperplane defined by $\boldsymbol{x}^T\boldsymbol{w}$.</answer>
+		<answer>If there exist a projection matrix $\boldsymbol{W}$ such that for each $\boldsymbol{x} \in \boldsymbol{X}_1$ there exists $\bar{\boldsymbol{x}} \in \boldsymbol{X}_2$, such that $\boldsymbol{x}\boldsymbol{W} = \bar{\boldsymbol{x}}$</answer>
+		<answer>If linear regressions fit for $\boldsymbol{X}_1$ and $\boldsymbol{X}_2$ have the same parameters.</answer>
 	</question>
 
 	<question>
@@ -50,8 +50,8 @@
 		<text>Select a false statement about logistic regression.</text>
 
 		<answer>It models binary classification using Bernoulli distribution.</answer>
-		<answer>$P(C_1|\mathbf{x},\mathbf{w}) = \frac{1}{1 - \exp(-\mathbf{x}^\mathbf{w})}$, $P(C_0 | \mathbf{x}, \mathbf{w}) = 1 - P(C_1| \mathbf{x}, \mathbf{w})$.</answer>
-		<answer>With fixed parameters $\mathbf{w}$, it leads to the same classification as the perceptron model.</answer>
+		<answer>$P(C_1|\boldsymbol{x},\boldsymbol{w}) = \frac{1}{1 - \exp(-\boldsymbol{x}^\boldsymbol{w})}$, $P(C_0 | \boldsymbol{x}, \boldsymbol{w}) = 1 - P(C_1| \boldsymbol{x}, \boldsymbol{w})$.</answer>
+		<answer>With fixed parameters $\boldsymbol{w}$, it leads to the same classification as the perceptron model.</answer>
 		<answer correct="true">It is a results of applying the maximum likelihood estimation when we assume that the errors are normally distributed.</answer>
 
 	</question>
