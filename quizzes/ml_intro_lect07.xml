@@ -1,0 +1,56 @@
+<quiz title="Intro to ML: Lecture 7 Recap">
+	<question>
+		<text>Select a false statement about the $k$ nearest neighbors classifier.</text>
+
+        <answer>It is a non-parametric method.</answer>
+        <answer>At inference time, it retrieves the $k$ nearest neighbors of the test point from the training set.</answer>
+        <answer correct="true">It is a parametric method because we need to learn the $k$ parameter.</answer>
+        <answer>Typically, requires an efficient data structure to avoid a linear search.</answer>
+	</question>
+
+    <question>
+        <text>A correct formulat for the Bayes theorem is:</text>
+
+        <answer correct="true">$P(y|x) = \frac{P(x|y)P(y)}{P(x)}$</answer>
+        <answer>$P(y|x) = \frac{P(x|y)P(y)}{P(x|y)P(y) + P(x|\neg y)P(y)}$</answer>
+        <answer>$P(y|x) = \frac{P(x,y)}{P(x)}$</answer>
+        <answer>$P(y|x) = \arg\max_y P(x|y)P(y) </answer>
+    </question>
+
+    <question>
+        <text>The Bayesian interpretation of the $L^2$ regularization is that</text>
+
+        <answer correct="true">it corresponds to a Gaussian prior on the weights.</answer>
+        <answer>it corresponds to assuming nothing about the weights, i.e., no Baysian prior.</answer>
+        <answer>it maximizes the entropy of the posterior distribution.</answer>
+        <answer></answer>
+
+    </question>
+
+    <question>
+        <text>The naive assumption in the naive Bayes classifier is that</text>
+
+        <answer correct="true">the features are conditionally independent given the class.</answer>
+        <answer>all features are normally distributed with zero mean.</answer>
+        <answer>the features are independent of the class, i.e., $P(\boldsymbol{x} \mid C_k) = P(\boldsymbol{x})$</answer>
+        <answer>the features can be modeled with a Gaussian, Bernoulli, or multinomial distribution.</answer>
+    </question>
+
+    <question>
+        <text>In Guassian Naive Bayes, the distribution feature $d$ given class $k$ is modeled as</text>
+
+        <answer correct="true">Normal distribution with mean $\frac{1}{|\mathcal{C_k}|}\sum_i x_i,d \cdot \mathbb{1}[\boldsymbol x_i \in \mathcal{C_k}]$ and corresponding variance.</answer>
+        <answer>Normal distribution with zero mean and unit variance.</answer>
+        <answer>Squared distance to the mean of the class.</answer>
+        <answer>Normal distribution with mean $\frac{1}{|\mathcal{C_k}|}\sum_i x_i,d \cdot \mathbb{1}[\boldsymbol x_i \in \mathcal{C_k}]$ and unit variance.</answer>
+    </question>
+
+    <question>
+        <text>Select a true statement about the Bernoulli Naive Bayes classifier.</text>
+
+        <answer>It assumes features come from a multinomial distribution.</answer>
+        <answer>A binary feature only contributes to the classification if it has value 1.</answer>
+        <answer correct="true">It is a special case of a linear model.</answer>
+        <answer>It can only be used for binary classification.</answer>
+    </question>
+</quiz>
