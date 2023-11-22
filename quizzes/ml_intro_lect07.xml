@@ -11,10 +11,10 @@
     <question>
         <text>A correct formulat for the Bayes theorem is:</text>
 
-        <answer correct="true">$P(y|x) = \frac{P(x|y)P(y)}{P(x)}$</answer>
         <answer>$P(y|x) = \frac{P(x|y)P(y)}{P(x|y)P(y) + P(x|\neg y)P(y)}$</answer>
+        <answer correct="true">$P(y|x) = \frac{P(x|y)P(y)}{P(x)}$</answer>
         <answer>$P(y|x) = \frac{P(x,y)}{P(x)}$</answer>
-        <answer>$P(y|x) = \arg\max_y P(x|y)P(y) </answer>
+        <answer>$P(y|x) = \arg\max_y P(x|y)P(y)$</answer>
     </question>
 
     <question>
@@ -23,7 +23,7 @@
         <answer correct="true">it corresponds to a Gaussian prior on the weights.</answer>
         <answer>it corresponds to assuming nothing about the weights, i.e., no Baysian prior.</answer>
         <answer>it maximizes the entropy of the posterior distribution.</answer>
-        <answer></answer>
+        <answer>the parameter $\lambda$ is the prior probability of each class.</answer>
 
     </question>
 
@@ -39,10 +39,10 @@
     <question>
         <text>In Guassian Naive Bayes, the distribution feature $d$ given class $k$ is modeled as</text>
 
-        <answer correct="true">Normal distribution with mean $\frac{1}{|\mathcal{C_k}|}\sum_i x_i,d \cdot \mathbb{1}[\boldsymbol x_i \in \mathcal{C_k}]$ and corresponding variance.</answer>
         <answer>Normal distribution with zero mean and unit variance.</answer>
         <answer>Squared distance to the mean of the class.</answer>
         <answer>Normal distribution with mean $\frac{1}{|\mathcal{C_k}|}\sum_i x_i,d \cdot \mathbb{1}[\boldsymbol x_i \in \mathcal{C_k}]$ and unit variance.</answer>
+        <answer correct="true">Normal distribution with mean $\frac{1}{|\mathcal{C_k}|}\sum_i x_i,d \cdot \mathbb{1}[\boldsymbol x_i \in \mathcal{C_k}]$ and corresponding variance.</answer>
     </question>
 
     <question>
@@ -52,5 +52,5 @@
         <answer>A binary feature only contributes to the classification if it has value 1.</answer>
         <answer correct="true">It is a special case of a linear model.</answer>
         <answer>It can only be used for binary classification.</answer>
-    </question>
+</question>
 </quiz>
