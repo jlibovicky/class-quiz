@@ -2,18 +2,18 @@
     <question>
         <text>What is an **incorrect** equation for covariance?</text>
 
-        <answer>Cov(\mathbf{x}, \mathbf{y}) = \mathbb{E}\left[ (\mathbf{x} - \mathbb{E}[\mathbf{x}])(\mathbf{y} - \mathbb{E}[\mathbf{y}]) \right]</answer>
-        <answer>Cov(\mathbf{x}, \mathbf{y}) = \mathbb{E}[\mathbf{x}\mathbf{y}] - \mathbb{E}[\mathbf{x}]\mathbb{E}[\mathbf{y}]</answer>
-        <answer>Cov(\mathbf{x}, \mathbf{y}) = \sum_{x,y} P(x, y)(x - \mathbb{E}[\mathbf{x}]) (y - \mathbb{E}[\mathbf{y}])</answer>
-        <answer correct="true">Cov(\mathbf{x}, \mathbf{y}) = \mathbb{E}[\log \frac{P(x, y))}{P(x)P(y)}]</answer>
+        <answer>$\operatorname{Cov}(\mathbf{x}, \mathbf{y}) = \mathbb{E}\left[ (\mathbf{x} - \mathbb{E}[\mathbf{x}])(\mathbf{y} - \mathbb{E}[\mathbf{y}]) \right]$</answer>
+        <answer>$\operatorname{Cov}(\mathbf{x}, \mathbf{y}) = \mathbb{E}[\mathbf{x}\mathbf{y}] - \mathbb{E}[\mathbf{x}]\mathbb{E}[\mathbf{y}]$</answer>
+        <answer>$\operatorname{Cov}(\mathbf{x}, \mathbf{y}) = \sum_{x,y} P(x, y)(x - \mathbb{E}[\mathbf{x}]) (y - \mathbb{E}[\mathbf{y}])$</answer>
+        <answer correct="true">$\operatorname{Cov}(\mathbf{x}, \mathbf{y}) = \mathbb{E}\left[\log \frac{P(x, y))}{P(x)P(y)}\right]$</answer>
     </question>
 
     <question>
         <text>What is the correct equation for Pearson correlation?</text>
 
-        <answer>$\rho = \frac{\operatorname{Cov}(\mathbf{x}, \mathbf{y})}{\operatorname{Var}(\mathbf{x})\operatorname{Var}(\mathbf{y})}$</answer>
+        <answer>$\rho = \frac{\operatorname{Cov}(\mathbf{x}, \mathbf{y})^2}{\operatorname{Var}(\mathbf{x})\operatorname{Var}(\mathbf{y})}$</answer>
         <answer correct="true">$\rho = \frac{\operatorname{Cov}(\mathbf{x}, \mathbf{y})}{\sqrt{\operatorname{Var}(\mathbf{x})}\sqrt{\operatorname{Var}(\mathbf{y})}}$</answer>
-        <answer>$\rho = \operatorname{Cov}(\mathbf{x}, \mathbf{y})} - \operatorname{Var}(\mathbf{x})\operatorname{Var}(\mathbf{y})$</answer>
+        <answer>$\rho = \operatorname{Cov}(\mathbf{x}, \mathbf{y}) - \operatorname{Var}(\mathbf{x})\operatorname{Var}(\mathbf{y})$</answer>
         <answer>$\rho = \sqrt{\frac{\operatorname{Cov}(\mathbf{x}, \mathbf{y})}{\operatorname{Var}(\mathbf{x})\operatorname{Var}(\mathbf{y})}}$</answer>
 
     </question>
@@ -21,7 +21,7 @@
     <question>
         <text>What is the relation between Spearman and Pearson correlation?</text>
 
-        <answer>They are the same.</answer>
+        <answer>They are the same, but in different scale.</answer>
         <answer correct="true">Spearman correlation is Pearson correlation on the ranks of the data.</answer>
         <answer>Pearson correlation quantifies the linear relationship between two variables, while Spearman correlation quantifies quadratic relationship.</answer>
         <answer>Pearson correlation is ideal value, whereas Spearman correlation is an estimate from the data.</answer>
@@ -41,8 +41,9 @@
 
         <answer>It works best for models with uncorrelated errors.</answer>
         <answer>It suffers from diminishing returns, i.e., adding more and more models brings less and less improvement.</answer>
-        <answer correct="true">It is a form of regularization because it reduces the total model capacity.</answer>
+        <answer>It is a form of regularization because it reduces the total model capacity.</answer>
         <answer>It is averaging the predictions of multiple models.</answer>
+	<answer correct="true">For classifiers with uncorrelated errors, the expected gain from ensembling grows linearly with the number of models.</answer>
     </question>
 
     <question>
