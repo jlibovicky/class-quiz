@@ -51,7 +51,7 @@
     </question>
 
     <question>
-        <text>The difference between random forests and grradient boosted decision trees is:</text>
+        <text>The difference between random forests and gradient boosted decision trees is:</text>
 
         <answer>Random forests use a single decision tree, while gradient boosted decision trees use multiple decision trees.</answer>
         <answer correct="true">Random forests make independent predictions, while gradient boosted decision trees make predictions sequentially.</answer>
