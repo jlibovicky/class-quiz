@@ -1,4 +1,4 @@
-<quiz title="Intro to ML: Lecture 7 Recap">
+<quiz title="Intro to ML: Lecture 7 Recap (k nearest neighbors, Naive Bayes)">
 	<question>
 		<text>Select a false statement about the $k$ nearest neighbors classifier.</text>
 
