@@ -146,11 +146,11 @@ def timer(quiz_id: str) -> Tuple[str, int]:
             "timer.html", quiz=quizzes[quiz_id], quiz_id=quiz_id), 200
 
 
-@app.route("/github_update")
+@app.route("/github_update", methods=["POST"])
 def github_update() -> Tuple[str, int]:
     subprocess.run(["git", "pull"], check=False)
     load_quizes()
-    return ("", 204)
+    return ("", 200)
 
 
 if __name__ == "__main__":
