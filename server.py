@@ -6,6 +6,7 @@ import json
 import datetime
 from multiprocessing import Manager
 import os
+import subprocess
 
 from apscheduler.schedulers.background import BackgroundScheduler
 import flask
@@ -39,6 +40,7 @@ last_answer_timestamp = manager.Value("f", 0.0)
 
 QUIZ_DIR = "quizzes"
 quizzes = manager.dict()
+failed_quizzes = manager.list()
 
 
 ANSWER_COUNTS_FILE = "answer_counts.json"
@@ -73,15 +75,10 @@ def script():
 @app.route("/")
 @auth.login_required
 def index() -> str:
-    quizzes_changed = any(quiz.needs_update() for quiz in quizzes.values())
-    xlm_files = set(
-        x.removesuffix(".xml") for x in os.listdir(QUIZ_DIR)
-        if x.endswith(".xml"))
-    new_quizzes = xlm_files - set(quizzes.keys())
     return flask.render_template(
         "quiz_listing.html",
         quizzes=quizzes,
-        needs_update=quizzes_changed or new_quizzes)
+        failed_quizzes=failed_quizzes)
 
 
 @app.route("/quiz/<path:quiz_id>")
@@ -126,19 +123,18 @@ def answers(quiz_id: str) -> Tuple[str, int]:
 
 
 def load_quizes() -> None:
+    # Hack to clear out the previously failed quizzes
+    failed_quizzes[:] = []
     for file_name in os.listdir(QUIZ_DIR):
         if not file_name.endswith(".xml"):
             continue
         q_id = os.path.splitext(file_name)[0]
         print(f"Loading quiz '{q_id}'")
-        quizzes[q_id] = parse_quiz(os.path.join(args.quiz_dir, file_name))
-
-
-@app.route("/reload_quizzes")
-@auth.login_required
-def reload_quizes():
-    load_quizes()
-    return flask.redirect(flask.url_for("index"))
+        try:
+            quizzes[q_id] = parse_quiz(os.path.join(args.quiz_dir, file_name))
+        except Exception as ex:
+            print(f"Failed to load quiz '{q_id}': {ex}")
+            failed_quizzes.append(q_id)
 
 
 @app.route("/timer/<path:quiz_id>")
@@ -150,10 +146,11 @@ def timer(quiz_id: str) -> Tuple[str, int]:
             "timer.html", quiz=quizzes[quiz_id], quiz_id=quiz_id), 200
 
 
-@app.route("/quit")
-def quit():
-     os._exit(0)
-
+@app.route("/github_update")
+def github_update() -> Tuple[str, int]:
+    subprocess.run(["git", "pull"], check=False)
+    load_quizes()
+    return ("", 204)
 
 
 if __name__ == "__main__":
@@ -180,4 +177,4 @@ if __name__ == "__main__":
     load_answer_counts()
     load_quizes()
 
-    app.run(host=args.host, port=args.port, debug=False)
+    app.run(host=args.host, port=args.port, debug=True)
