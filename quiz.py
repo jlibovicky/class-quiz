@@ -2,7 +2,7 @@ from typing import List
 from dataclasses import dataclass
 import datetime
 import os
-import xml.etree.ElementTree as ET
+import re
 
 
 @dataclass
@@ -32,29 +32,58 @@ class Quiz:
             os.path.getmtime(self.path))
 
 
-def parse_quiz(file_name: str) -> Quiz:
+def parse_markdown_quiz(file_name: str) -> Quiz:
     last_modified = datetime.datetime.fromtimestamp(
         os.path.getmtime(file_name))
-    tree = ET.parse(file_name)
-    root = tree.getroot()
-
-    assert root.tag == "quiz"
-
-    title = root.attrib.get("title", "Quiz")
-
+    quiz_title = None
     questions: List[Question] = []
-    for question in root.findall("question"):
-        question_text = question.find("text").text
-        answers = []
-        correct_answer = None
-        for i, answer in enumerate(question.findall("answer")):
-            assert answer.tag == "answer"
-            answer_text = answer.text
-            if answer.attrib.get("correct", "false") == "true":
-                correct_answer = i
-            answers.append(answer_text)
-        assert correct_answer is not None
-        answers = [answer.text for answer in question.findall("answer")]
-        questions.append(Question(question_text, answers, correct_answer))
+    current_question = None
+    current_answers: List[str] = []
+    current_correct_answer = None
 
-    return Quiz(title, questions, last_modified, file_name)
+    def add_question():
+        nonlocal current_question
+        nonlocal current_answers
+        nonlocal current_correct_answer
+        if current_question is None:
+            raise ValueError("No current question, but answers found.")
+        if current_correct_answer is None:
+            raise ValueError("No correct answer found.")
+        if not current_answers:
+            raise ValueError("No answers found.")
+
+        questions.append(Question(
+            current_question, current_answers, current_correct_answer))
+        current_question = None
+        current_answers = []
+        current_correct_answer = None
+
+    with open(file_name, encoding="utf-8") as f_quiz:
+        for line in f_quiz:
+            line = line.rstrip()
+            if not line:
+                continue
+            if line.startswith("# "):
+                quiz_title = line[2:].strip()
+            elif line.startswith("## "):
+                if current_question is not None:
+                    add_question()
+                current_question = line[3:].strip()
+            elif re.match(r"^\d+\.", line):
+                num_pos = re.search(r"\d+\.", line)
+                assert num_pos is not None
+                answer = line[num_pos.end():].strip()
+                if current_question is None:
+                    raise ValueError("No current question, but answers found.")
+                if answer.startswith("(*) "):
+                    current_correct_answer = len(current_answers)
+                    answer = answer[4:].strip()
+                current_answers.append(answer)
+
+    if quiz_title is None:
+        raise ValueError("No quiz title found.")
+
+    if current_question is not None:
+        add_question()
+
+    return Quiz(quiz_title, questions, last_modified, file_name)

@@ -14,7 +14,7 @@ from flask import Flask
 from flask_httpauth import HTTPBasicAuth
 from markdown import markdown
 
-from quiz import parse_quiz
+from quiz import parse_markdown_quiz
 
 
 def html(text: str) -> str:
@@ -126,14 +126,15 @@ def load_quizes() -> None:
     # Hack to clear out the previously failed quizzes
     failed_quizzes[:] = []
     for file_name in os.listdir(QUIZ_DIR):
-        if not file_name.endswith(".xml"):
+        if not file_name.endswith(".md"):
             continue
         q_id = os.path.splitext(file_name)[0]
         print(f"Loading quiz '{q_id}'")
         try:
-            quizzes[q_id] = parse_quiz(os.path.join(args.quiz_dir, file_name))
-        except Exception as ex:
-            print(f"Failed to load quiz '{q_id}': {ex}")
+            quizzes[q_id] = parse_markdown_quiz(
+                os.path.join(args.quiz_dir, file_name))
+        except ValueError as error:
+            print(f"Failed to load quiz '{q_id}': {error}")
             failed_quizzes.append(q_id)
 
 
