@@ -20,7 +20,7 @@
 
 1. Is only defined if all outcomes have non-zero probability.
 2. Can be both positive and negative.
-3. (*) Is an expectation of $\log P(x)$.
+3. (*) Is an expectation of $-\log P(x)$.
 4. Is a real number between zero and $e$ (if we use natural logarithm).
 
 
