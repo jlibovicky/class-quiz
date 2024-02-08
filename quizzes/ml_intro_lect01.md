@@ -1,6 +1,6 @@
 # Intro to ML: Lecture 1 Recap
 
-## 1. What is the difference between classification and regression?
+## What is the difference between classification and regression?
 
 1. (*) Classification predicts **discrete labels**, regression predicts **continuous values**.
 2. Classification predicts **continuous values**, regression predicts **discrete labels**.
@@ -8,7 +8,7 @@
 4. Classification is **supervised** learning, regression is **unsupervised** learning.
 
 
-## 2. What is the difference between supervised and unsupervised learning?
+## What is the difference between supervised and unsupervised learning?
 
 1. Unsupervised learning is non-parametric.
 2. Supervised learning is non-parametric.
@@ -16,7 +16,7 @@
 4. Learning without supervision is impossible.
 
 
-## 3. Why is linear regression called linear even when we use it to fit polynomial curves?
+## Why is linear regression called linear even when we use it to fit polynomial curves?
 
 1. (*) Because it fits a **hyperplane** in the polynomial feature space.
 2. It is **no longer linear** when we use polynomial features.
@@ -24,7 +24,7 @@
 4. It is linear because it uses** linear algebra** to solve the problem.
 
 
-## 4. What is overfitting?
+## What is overfitting?
 
 1. When the model always predicts the same value regardless of the input.
 2. When the model is too simple to fit the data.
@@ -32,7 +32,7 @@
 4. When the model works perfectly both on training and test data.
 
 
-## 5. An equation that optimizes $||\boldsymbol{X}\boldsymbol{w} - \boldsymbol{t}||^2$ for $\textbf{w}$ is:
+## An equation that optimizes $||\boldsymbol{X}\boldsymbol{w} - \boldsymbol{t}||^2$ for $\textbf{w}$ is:
 
 1. (*) $\boldsymbol{w} \leftarrow (\boldsymbol{X}^T\boldsymbol{X})^{-1}\boldsymbol{X}^T\boldsymbol{t}$
 2. $\boldsymbol{w} \leftarrow (\boldsymbol{X}^T\boldsymbol{X})(\boldsymbol{X}^T)^{-1}\boldsymbol{t}$
@@ -40,7 +40,7 @@
 4. It only has a degenerate solution $\textbf{w} = \textbf{0}$ when we do not add bias term $b$.
 
 
-## 6. Why is the bias term $b$ missing in the previous equation?
+## Why is the bias term $b$ missing in the previous equation?
 
 1. (*) It is not missing, it is included in $\boldsymbol{w}$.
 2. It is missing because it is always zero.
@@ -48,7 +48,7 @@
 4. This a different notation, $b = \boldsymbol{w}$ in this case.
 
 
-## 7. What is the role of the bias term $b$ in $\boldsymbol{x}^T\boldsymbol{w} + b$?
+## What is the role of the bias term $b$ in $\boldsymbol{x}^T\boldsymbol{w} + b$?
 
 1. It is the **slope** of the line (or the hyperplane) fitted by the model.
 2. (*) It is the **intercept** of the line (or the hyperplane) fitted by the model.

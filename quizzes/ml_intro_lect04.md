@@ -1,6 +1,6 @@
 # Intro to ML: Lecture 4 Recap
 
-## 1. The weight update in SGD for logistic regression is
+## The weight update in SGD for logistic regression is
 
 1. (*) $(y(\boldsymbol{x}_i, \boldsymbol{w}) - t_i)\boldsymbol{x}_i$
 2. $\sigma(\boldsymbol{x}_i^T\boldsymbol{w})\left(1 - \sigma(\boldsymbol{x}_i^T) \right)\boldsymbol{x}_i$
@@ -8,7 +8,7 @@
 4. $-t_i\boldsymbol{x}_i$ if $t_i \boldsymbol{x}^T\boldsymbol{w} < 0$
 
 
-## 2. Linear regression trained with the mean squared error assumes that:
+## Linear regression trained with the mean squared error assumes that:
 
 1. The variance of the error is zero for all inputs.
 2. (*) The variance of the error is constant for all inputs.
@@ -16,7 +16,7 @@
 4. The variance of the error is logarithmic with respect to the input vector size $||x||$.
 
 
-## 3. Select a false statement about the softmax function
+## Select a false statement about the softmax function
 
 1. $\operatorname{softmax}(\boldsymbol{x}) = \frac{\exp \boldsymbol{x}}{\sum_i \exp x_i}$
 2. Softmax is invariant towards shift: $\operatorname{softmax}(\boldsymbol{x} + c) = \operatorname{softmax}(\boldsymbol{x})$
@@ -24,7 +24,7 @@
 4. Softmax yields a categorical distribution.
 
 
-## 4. Generalized linear models
+## Generalized linear models
 
 1. (*) Are a special case of neural networks with zero hidden layers.
 2. Always have the optimum analytical solution on training data.
@@ -32,7 +32,7 @@
 4. Can only work with linear features, they do not converge with polynomial features.
 
 
-## 5. The hidden layer of MLP $\boldsymbol{h}$
+## The hidden layer of MLP $\boldsymbol{h}$
 
 1. Can be interpreted as automatic features extraction from $\boldsymbol{x}$. Vector $\boldsymbol{h}$ is a logarithm of a multinomial distribution over the so called hidden features.
 2. (*) $\boldsymbol{h} = a(\boldsymbol{x}^T\boldsymbol{W} + b)$ where $a$ is the activation function.
@@ -40,7 +40,7 @@
 4. Is only used during training. At inference time, it is removed (hidden) and MLP behaves as a linear model.
 
 
-## 6. Select a false statement about activation functions in multi-layer perceptron.
+## Select a false statement about activation functions in multi-layer perceptron.
 
 1. The activation functions must be continuous (almost everywhere), so we can use SGD for training.
 2. The most frequently used activation functions for hidden layers are $\tanh$ and $\operatorname{ReLU}$.

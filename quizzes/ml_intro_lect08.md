@@ -1,6 +1,6 @@
 # Intro to ML: Lecture 8 Recap (Correlation, Model Combiation)
 
-## 1. What is an **incorrect** equation for covariance?
+## What is an **incorrect** equation for covariance?
 
 1. $\operatorname{Cov}(\mathbf{x}, \mathbf{y}) = \mathbb{E}\left[ (\mathbf{x} - \mathbb{E}[\mathbf{x}])(\mathbf{y} - \mathbb{E}[\mathbf{y}]) \right]$
 2. $\operatorname{Cov}(\mathbf{x}, \mathbf{y}) = \mathbb{E}[\mathbf{x}\mathbf{y}] - \mathbb{E}[\mathbf{x}]\mathbb{E}[\mathbf{y}]$
@@ -8,7 +8,7 @@
 4. (*) $\operatorname{Cov}(\mathbf{x}, \mathbf{y}) = \mathbb{E}\left[\log \frac{P(x, y))}{P(x)P(y)}\right]$
 
 
-## 2. What is the correct equation for Pearson correlation?
+## What is the correct equation for Pearson correlation?
 
 1. $\rho = \frac{\operatorname{Cov}(\mathbf{x}, \mathbf{y})^2}{\operatorname{Var}(\mathbf{x})\operatorname{Var}(\mathbf{y})}$
 2. (*) $\rho = \frac{\operatorname{Cov}(\mathbf{x}, \mathbf{y})}{\sqrt{\operatorname{Var}(\mathbf{x})}\sqrt{\operatorname{Var}(\mathbf{y})}}$
@@ -16,7 +16,7 @@
 4. $\rho = \sqrt{\frac{\operatorname{Cov}(\mathbf{x}, \mathbf{y})}{\operatorname{Var}(\mathbf{x})\operatorname{Var}(\mathbf{y})}}$
 
 
-## 3. What is the relation between Spearman and Pearson correlation?
+## What is the relation between Spearman and Pearson correlation?
 
 1. They are the same, but in different scale.
 2. (*) Spearman correlation is Pearson correlation on the ranks of the data.
@@ -24,7 +24,7 @@
 4. Pearson correlation is ideal value, whereas Spearman correlation is an estimate from the data.
 
 
-## 4. Cohen's $\kappa$ quantifies
+## Cohen's $\kappa$ quantifies
 
 1. normalized Spearman correlation between ranking by two annotators.
 2. (*) the probability of the actual agreement between two annotators compared to a chance agreement.
@@ -32,7 +32,7 @@
 4. the upper bound of a classifier accuracy trained on data from the given annotation.
 
 
-## 5. Select a **false** statement about model ensembling.
+## Select a **false** statement about model ensembling.
 
 1. It works best for models with uncorrelated errors.
 2. It suffers from diminishing returns, i.e., adding more and more models brings less and less improvement.
@@ -41,7 +41,7 @@
 5. (*) For classifiers with uncorrelated errors, the expected gain from ensembling grows linearly with the number of models.
 
 
-## 6. What is knowledge distillation?
+## What is knowledge distillation?
 
 1. (*) Training a model to predict the output of a bigger model or an ensemble of models.
 2. Searching for a small model by gradually decreasing the number of parameters.
