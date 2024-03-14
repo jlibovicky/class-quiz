@@ -4,7 +4,7 @@
 
 1. (X) To prevent the gradient from vanishing during training.
 2. To replace the need for traditional RNNs and LSTMs.
-3. Transformers do use residual connections and use layer normalization instead.
+3. Transformers do not use residual connections and use layer normalization instead.
 
 ## What does the self-attention mechanism in Transformers allow each token to do?
 
@@ -22,10 +22,10 @@
 
 ## Which of the following best describes the intuition behind the self-attention mechanism in Transformers?
 
-1. (X) To allow tokens to communicate what information they carry to other tokens.
-2. To mimic the human ability to focus on one task at a time.
-3. To reduce the complexity and computational resources required.
-4. To enable the model to run on parallel hardware efficiently.
+1. (X) Allow tokens to communicate what information they carry to other tokens.
+2. Mimic the human ability to focus on one task at a time.
+3. Reduce the complexity and computational resources required.
+4. Enable the model to run on parallel hardware efficiently.
 
 ## How do token embeddings and position embeddings work together in a Transformer model?
 
@@ -36,12 +36,12 @@
 
 ## In the context of Transformer models, what is the significance of multi-head attention?
 
-1. It allows the model to focus on different parts of the sentence at the same time.
-2. It increases the model size without improving performance.
+1. It prevents the model from focusing on different parts of the sentence at the same time.
+2. It decreases the model size without affecting the performance.
 3. (X) It enables the model to capture information from different representation subspaces at different positions.
 4. It reduces the overall computational complexity of the attention mechanism.
 
-## What is the correct equation for the $i$-th head in the multi-head self-attention for a sequence of hidden states $X = (x_1, \lodts, x_n)$?
+## What is the correct equation for the $i$-th head in the multi-head self-attention for a sequence of hidden states $X = (x_1, \ldots, x_n)$?
 
 1. (X) $\text{softmax}\left(\frac{XW_{Qi} (XW_{Ki})^T}{\sqrt{d_k}}\right)XW_{Vi}$
 2. $W_2 \cdot a(W_1 \cdot X + b_1) + b_2$
