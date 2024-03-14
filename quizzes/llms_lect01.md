@@ -3,7 +3,7 @@
 
 ## Which of the following is NOT a component of a Transformer-based language model?
 
-1. (*) Recurrent neural network
+1. (X) Recurrent neural network
 2. Decoder
 3. Masked self-attention
 4. Encoder
@@ -13,7 +13,7 @@
 ## Which of the following models does NOT have an encoder?
 
 1. BERT
-2. (*) GPT-3
+2. (X) GPT-3
 3. Majority of machine translation models
 
 
@@ -21,12 +21,12 @@
 
 1. Encoder
 2. Cross-attention
-3. (*) Decoder
+3. (X) Decoder
 4. Both encoder and decoder
 
 
 ## Is it possible for tokenized text to have less tokens than the number of words in the original text?
 
 1. Yes, it happens all the time
-2. (*) Yes, but rarely
+2. (X) Yes, but rarely
 3. Never

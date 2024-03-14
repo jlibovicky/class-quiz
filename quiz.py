@@ -75,7 +75,7 @@ def parse_markdown_quiz(file_name: str) -> Quiz:
                 answer = line[num_pos.end():].strip()
                 if current_question is None:
                     raise ValueError("No current question, but answers found.")
-                if answer.startswith("(*) "):
+                if answer.startswith("(X) "):
                     current_correct_answer = len(current_answers)
                     answer = answer[4:].strip()
                 current_answers.append(answer)
