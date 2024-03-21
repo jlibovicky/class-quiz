@@ -2,7 +2,7 @@
 
 
 
-# What is the objective for training generative LLMs?
+## What is the objective for training generative LLMs?
 
 1. Predicting the right token on a masked position inside a target sequence.
 2. Predicting the right sequence of tokens given a prefix.
@@ -16,7 +16,7 @@
 <!-- 3. (X) $- \frac{1}{|\mathcal{D}|} \sum_{(x,y) \in \mathcal{D}} \log p_{\theta}(y|x)$ -->
 
 
-# Which of the following is NOT an effect of applying the objective used for training generative LLMs?
+## Which of the following is NOT an effect of applying the objective used for training generative LLMs?
 
 1. (X) Increasing the cross-entropy of a one-hot distribution of the correct token
    and the distribution predicted by the model.
@@ -26,7 +26,7 @@
    and the distribution predicted by the model.
 
 
-# Why do training optimizers use momentum?
+## Why do training optimizers use momentum?
 
 1. To prevent too high learning rates.
 2. To avoid overfitting.
@@ -34,7 +34,7 @@
 4. Because it guarantees convergence into the global optimum.
 
 
-# What do we mean by instruction tuning?
+## What do we mean by instruction tuning?
 
 1. Instead of using training data, we imperatively tell the model how to update the weights using a dynamic programming algorithm.
 2. (X) Formatting the task-specific data as instructions in natural language and using those to further train a pretrained model..
@@ -42,7 +42,7 @@
 4. Using human feedback in combination with the reinforcement learning objective.
 
 
-# What do we use RLHF for?
+## What do we use RLHF for?
 
 1. (X) To adapt the model responses to match human preference.
 2. To train the model to imitate humans.
