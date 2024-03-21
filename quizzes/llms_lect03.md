@@ -9,11 +9,11 @@
 3. (X) Predicting the right token that follows a given prefix.
 
 
-<!-- # Which of the following is the formula for the cross-entropy loss? -->
+## Which of the following is the formula for the cross-entropy loss?
 
-<!-- 1. $\max(0, 1 - \hat{y} \cdot y)$ -->
-<!-- 2. $(y - \hat{y}^2)$ -->
-<!-- 3. (X) $- \frac{1}{|\mathcal{D}|} \sum_{(x,y) \in \mathcal{D}} \log p_{\theta}(y|x)$ -->
+1. $\max(0, 1 - \hat{y} \cdot y)$
+2. $(y - \hat{y}^2)$
+3. (X) $- \frac{1}{|\mathcal{D}|} \sum_{(x,y) \in \mathcal{D}} \log p_{\theta}(y|x)$
 
 
 ## Which of the following is NOT an effect of applying the objective used for training generative LLMs?
