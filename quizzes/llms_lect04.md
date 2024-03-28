@@ -28,9 +28,9 @@
 3. Beam search always produces more coherent text than greedy search.
 4. Greedy search can backtrack to previous states, but beam search cannot.
 
-## What problem does nucleus sampling solve that is inherent to top-k sampling?
+## What problem does nucleus sampling solve that is inherent to top-$k$ sampling?
 
 1. It makes the model faster by reducing the number of tokens considered at each step.
-2. (X) It dynamically adjusts the number of tokens considered based on their cumulative probability, leading to more natural text generation.
+2. (X) It dynamically adjusts the number of tokens considered based on their cumulative probability.
 3. It exclusively focuses on the most likely token, thus making the text more predictable.
 4. It generates text that is less coherent but more diverse.

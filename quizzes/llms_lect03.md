@@ -1,6 +1,4 @@
-# Large Language Models: Lecture 3 Recap
-
-
+# Large Language Models: Lecture 3 Recap (Training)
 
 ## What is the objective for training generative LLMs?
 
