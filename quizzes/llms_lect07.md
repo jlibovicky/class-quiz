@@ -21,9 +21,9 @@
 3. (X) GPT-4 is particularly known for its capability to follow fine-grained instructions.
 4. GPT-4 is the only model that can handle low-resource languages effectively.
 
-## What is one of the biggest challenges in simultaneous machine translation?
+## What is one of the biggest challenges in simultaneous speech translation?
 
-1. (X) Deciding the optimal wait time to balance latency and quality.
+1. (X) Deciding when to wait or translate, to balance the latency and quality.
 2. Distinguishing speech and silence.
 3. Different speed of speech in different languages.
-4. The computational cost of translation.
+4. The computation time of the text-to-text translation.
