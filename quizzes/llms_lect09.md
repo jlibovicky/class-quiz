@@ -1,4 +1,4 @@
-# Large Language Models: Lecture 9 Quiz
+# Large Language Models: Lecture 9 Quiz (Multilinguality)
 
 ## Ability to solve a task in one language after fine-tuning or instructing in another language is attributed to:
 
