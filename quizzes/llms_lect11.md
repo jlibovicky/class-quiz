@@ -2,7 +2,8 @@
 
 
 ## What are the main ideas behind the Toolformer model?
-1. Integrating external tools into a language model to improve its arithmetic and factual accuracy capabilities.
+
+1. (X) Integrating external tools into a language model to improve its arithmetic and factual accuracy capabilities.
 2. Reducing the size of a language model while maintaining its performance through efficient pruning techniques.
 3. Training a language model exclusively on code repositories to enhance its programming capabilities.
 4. Developing a language model that operates without any human supervision by using reinforcement learning.
