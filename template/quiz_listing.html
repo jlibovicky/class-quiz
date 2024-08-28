@@ -7,33 +7,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
-
-<script>
-var qr_code = null;
-function make_qrcode(quiz_id) {
-    let quiz_url = new URL("../quiz/" + quiz_id, document.baseURI).href;
-    $("#qr_code_url").text(quiz_url);
-    if (qr_code) {
-        qr_code.clear();
-        qr_code.makeCode(quiz_url);
-    }
-    else {
-        qr_code = new QRCode(document.getElementById("qrcode"), {
-            text: quiz_url,
-            width: 320,
-            height: 320,
-            colorDark : "#000000",
-            colorLight : "#ffffff",
-            correctLevel : QRCode.CorrectLevel.H
-        });
-    }
-}
-
-$(document).ready(function(){
-    make_qrcode("");
-});
-</script>
 
 </head>
 <body>
@@ -53,17 +26,6 @@ $(document).ready(function(){
 
 <h1>List of available quizzes</h1>
 
-    <div class="card mb-3 text-center">
-        <div class="card-body">
-            <h5 class="card-title">QR Code for a quiz</h5>
-            <div class="card-text">
-                <p>Click on the link to generate a QR code for a quiz.</p>
-                <p>Current QR code's URL: <tt id="qr_code_url"></tt></p>.
-                    <div id="qrcode" style="display: flex; justify-content: center; text-align: center;"></div>
-            </div>
-        </div>
-    </div>
-
     <table class="table table-striped">
         <tr>
             <th>Quiz ID</th>
@@ -71,7 +33,6 @@ $(document).ready(function(){
             <th>Modified</th>
             <th>Quiz link</th>
             <th>Answer stats link</th>
-            <th>Show QR Code</th>
             <th>Timer Page</th>
         </tr>
         {% for quiz_id, quiz in quizzes.items()|sort: %}
@@ -81,7 +42,6 @@ $(document).ready(function(){
             <td>{{ quiz.last_modified }}</td>
             <td><a href="quiz/{{ quiz_id }}">Quiz</a></td>
             <td><a href="answer_stats/{{ quiz_id }}">Answers</a></td>
-            <td><a href="#" onclick="make_qrcode('{{ quiz_id }}');">QR Code</a></td>
             <td>
                 <a href="timer/{{ quiz_id }}?minutes=1">1m</a> |
                 <a href="timer/{{ quiz_id }}?minutes=2">2m</a> |
