@@ -181,7 +181,7 @@ def create_qa_session() -> Tuple[str, int]:
     qa_sessions[session_id] = QASession(datetime.datetime.now(), manager)
 
     # Redirect to the QA session timer
-    return flask.redirect(f"./qa_question_timer/{session_id}")
+    return flask.redirect(f"./qa_question_timer/{session_id}?minutes=2")
 
 
 @app.route("/qa_question_timer/<path:session_id>")
@@ -193,7 +193,7 @@ def qa_question_timer(session_id: str) -> Tuple[str, int]:
     return flask.render_template(
             "timer.html",
             title="Ask a question",
-            redirect_url=f"../qa_voting_timer/{session_id}",
+            redirect_url=f"../qa_voting_timer/{session_id}?minutes=2",
             qr_code_url=f"../qa_question_form/{session_id}"), 200
 
 
@@ -227,6 +227,7 @@ def qa_voting_timer(session_id: str) -> Tuple[str, int]:
     return flask.render_template(
             "timer.html",
             title="Vote on questions",
+            start_directly=True,
             redirect_url=f"../qa_results/{session_id}",
             qr_code_url=f"../qa_vote/{session_id}"), 200
 
