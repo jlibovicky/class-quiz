@@ -53,6 +53,51 @@
         {% endfor %}
     </table>
 
+<h1>Q&A Sessions</h1>
+
+    <div class="card mb-3 text-center">
+        <div class="card-body">
+            <h5 class="card-title">Create Q&A Session</h5>
+            <div class="card-text">
+                <form action="/create_qa_session" method="POST">
+                    <div class="mb-3">
+                        <label for="session_id" class="form-label">Session ID</label>
+                        <input type="text" class="form-control" id="session_id" name="session_id" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Session</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div> 
+
+<!-- List of Q&A sessions with links to session timer and results -->
+
+<div class="container">
+    <table class="table table-striped">
+        <tr>
+            <th>Session ID</th>
+            <th>Timer Page</th>
+            <th>Results Page</th>
+            <th># Questions</th>
+            <th># Votes</th>
+        </tr>
+        {% for session_id, session in qa_sessions.items()|sort: %}
+        <tr>
+            <td><tt>{{ session_id }}</tt></td>
+            <td><a href="qa_timer/{{ session_id }}?minutes=1">1m</a> |
+                <a href="qa_timer/{{ session_id }}?minutes=2">2m</a> |
+                <a href="qa_timer/{{ session_id }}?minutes=3">3m</a> |
+                <a href="qa_timer/{{ session_id }}?minutes=4">4m</a> |
+                <a href="qa_timer/{{ session_id }}?minutes=5">5m</a>
+            </td>
+            <td><a href="qa_results/{{ session_id }}">Results</a></td>
+            <td>{{ session.question_count }}</td>
+            <td>{{ session.total_votes }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
 
 
 </div>

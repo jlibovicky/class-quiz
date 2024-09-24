@@ -33,9 +33,10 @@ MathJax = {
     $(document).ready(function(){
         show_time();
         $("#timer").hide();
+        $("#skip").hide();
         $("#start").text("Start timer (" + minutes + " min)");
 
-	let quiz_url = new URL("../quiz/{{quiz_id}}", document.baseURI).href;
+        let quiz_url = new URL("{{qr_code_url}}", document.baseURI).href;
 
         qr_code = new QRCode(document.getElementById("qrcode"), {
             text: quiz_url,
@@ -48,11 +49,12 @@ MathJax = {
 
         $("#start").click(function() {
             $("#timer").show();
+            $("#skip").show();
             var timer = setInterval(function() {
                 if (seconds == 0) {
                     if (minutes == 0) {
                         clearInterval(timer);
-                        window.location.href = "../answer_stats/{{quiz_id}}";
+                        window.location.href = "{{redirect_url}}";
                     }
                     else {
                         minutes--;
@@ -75,11 +77,12 @@ MathJax = {
 <body>
 
 <div class="container text-center">
-    <h1>{{quiz.title}}</h1>
+    <h1>{{title}}</h1>
     <h2 id="url" style="font-family: monospace"></h2>
     <div id="qrcode" style="display: flex; justify-content: center; text-align: center; margin: 3em"></div>
     <div id="timer" style="font-size: 4em; text-align: center">{{ minutes }}:{{ seconds }}</div>
     <button type="button" id="start" class="btn btn-primary" style="width: 100%; margin-top: 1em;"> Start </button>
+    <a href="{{redirect_url}}" id="skip">Skip</a>
 
 </div>
 
