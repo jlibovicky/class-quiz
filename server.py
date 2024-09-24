@@ -101,7 +101,7 @@ def quiz(quiz_id: str) -> Tuple[str, int]:
     if quiz_id not in quizzes:
         return f"Quiz '{quiz_id}' not found.", 404
     return flask.render_template(
-            "student_interface.html", quiz=quizzes[quiz_id]), 200
+            "quiz_assignment.html", quiz=quizzes[quiz_id]), 200
 
 
 @app.route("/quiz/<path:quiz_id>/answer/<int:question_id>/<int:answer_id>")
@@ -132,7 +132,7 @@ def answers(quiz_id: str) -> Tuple[str, int]:
             quiz_specific_counts[int(question_id), int(answer_id)] = value
 
     return flask.render_template(
-            "teacher_interface.html",
+            "index.html",
             quiz=quizzes[quiz_id], quiz_id=quiz_id,
             answer_counts=quiz_specific_counts), 200
 
