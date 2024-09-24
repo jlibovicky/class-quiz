@@ -181,7 +181,7 @@ def create_qa_session() -> Tuple[str, int]:
     qa_sessions[session_id] = QASession(datetime.datetime.now(), manager)
 
     # Redirect to the QA session timer
-    return flask.redirect(f"/qa_question_timer/{session_id}")
+    return flask.redirect(f"./qa_question_timer/{session_id}")
 
 
 @app.route("/qa_question_timer/<path:session_id>")
