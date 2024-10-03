@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import hashlib
 from typing import Tuple
 import argparse
 import json
@@ -100,6 +101,15 @@ def index() -> str:
 def quiz(quiz_id: str) -> Tuple[str, int]:
     if quiz_id not in quizzes:
         return f"Quiz '{quiz_id}' not found.", 404
+
+    # Log that the quiz was started including the time and a MD5 hash of the IP
+    # address of the client. 
+    with open("quiz_open.log", "a") as f_log:
+        addr_hash = hashlib.md5(flask.request.remote_addr.encode()).hexdigest()
+        print(
+            f"{datetime.datetime.now()} {quiz_id} {addr_hash}",
+            file=f_log)
+
     return flask.render_template(
             "quiz_assignment.html", quiz=quizzes[quiz_id]), 200
 
