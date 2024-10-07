@@ -312,4 +312,4 @@ if __name__ == "__main__":
     load_app_state()
     load_quizes()
 
-    app.run(host=args.host, port=args.port, debug=True)
+    app.run(host=args.host, port=args.port, debug=False)

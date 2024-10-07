@@ -32,7 +32,7 @@ class QASession:
 
     @property
     def total_votes(self):
-        return sum(q.likes + q.dislikes for q in self.questions)
+        return sum(q.likes.value + q.dislikes.value for q in self.questions)
 
     def sorted_questions(self):
         return sorted(self.questions, key=lambda q: q.score, reverse=True)
