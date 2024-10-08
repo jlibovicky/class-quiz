@@ -41,7 +41,7 @@ last_quiz_save_timestamp = manager.Value("f", 0.0)
 last_quiz_answer_timestamp = manager.Value("f", 0.0)
 
 last_qa_save_timestamp = manager.Value("f", 0.0)
-last_qa_answer_timestamp = manager.Value("f", 0.0)
+last_qa_action_timestamp = manager.Value("f", 0.0)
 
 QUIZ_DIR = "quizzes"
 quizzes = manager.dict()
@@ -58,7 +58,7 @@ def save_app_state() -> None:
         with open(ANSWER_COUNTS_FILE, "w", encoding="utf-8") as f_json:
             json.dump(answer_counts.copy(), f_json)
         last_quiz_save_timestamp.value = datetime.datetime.now().timestamp()
-    if last_qa_answer_timestamp.value > last_qa_save_timestamp.value:
+    if last_qa_action_timestamp.value > last_qa_save_timestamp.value:
         with open(QA_DATA_FILE, "w", encoding="utf-8") as f_json:
             json.dump(qa_sessions.copy(), f_json)
         last_qa_save_timestamp.value = datetime.datetime.now().timestamp()
@@ -224,6 +224,8 @@ def ask_question() -> Tuple[str, int]:
     # Add the question to the QA session
     qa_sessions[session_id].add_question(question_text, manager)
 
+    last_qa_action_timestamp.value = datetime.datetime.now().timestamp()
+
     return "", 200
 
 
@@ -259,6 +261,7 @@ def qa_question_vote() -> Tuple[str, int]:
     else:
         return "Invalid vote.", 400
 
+    last_qa_save_timestamp.value = datetime.datetime.now().timestamp()
     return "", 200
 
 
