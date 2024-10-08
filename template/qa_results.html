@@ -10,13 +10,29 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
+<script>
+$(document).ready(function() {
+    $('.question-row').click(function() {
+        // Reset all question-row divs to normal
+        $('.question-row').removeClass('active');
+        $('.question-row').css('background-color', '');
+        $('.question-row h5').css('font-size', '');
+
+        // Apply styles to the clicked question-row div
+        $(this).addClass('active');
+        $(this).css('background-color', '#edca68');
+        $(this).find('h5').css('font-size', '40px');
+    });
+});
+</script>
+
 </head>
 
 <body>
 
 <div class="container">
     {% for question in session.sorted_questions() %}
-    <div class="container border rounded mt-3">
+    <div class="container border rounded mt-3 question-row">
         <div class="row">
             <div class="col-11">
                 <h5>{{ question.text }}</h5>
