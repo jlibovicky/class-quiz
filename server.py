@@ -60,7 +60,7 @@ def save_app_state() -> None:
         last_quiz_save_timestamp.value = datetime.datetime.now().timestamp()
     if last_qa_action_timestamp.value > last_qa_save_timestamp.value:
         with open(QA_DATA_FILE, "w", encoding="utf-8") as f_json:
-            json.dump(qa_sessions.copy(), f_json)
+            json.dump({qa_name: session.to_json() for qa_name, session in qa_sessions.items()}, f_json)
         last_qa_save_timestamp.value = datetime.datetime.now().timestamp()
 
 
@@ -71,7 +71,11 @@ def load_app_state() -> None:
         last_quiz_save_timestamp.value = datetime.datetime.now().timestamp()
     if os.path.exists(QA_DATA_FILE):
         with open(QA_DATA_FILE, "r", encoding="utf-8") as f_json:
-            qa_sessions.update(json.load(f_json))
+            loaded_qa_sessions = json.load(f_json)
+            qa_sessions.update({
+                session_id: QASession.from_json_dict(
+                    session_dict, manager)
+                for session_id, session_dict in loaded_qa_sessions})
         last_qa_save_timestamp.value = datetime.datetime.now().timestamp()
 
 
@@ -188,7 +192,10 @@ def create_qa_session() -> Tuple[str, int]:
     session_id = flask.request.form["session_id"]
 
     # Create a directory for a QA session
-    qa_sessions[session_id] = QASession(datetime.datetime.now(), manager)
+    qa_sessions[session_id] = QASession(
+        datetime.datetime.now().timestamp(), manager)
+
+    last_qa_action_timestamp.value = datetime.datetime.now().timestamp()
 
     # Redirect to the QA session timer
     return flask.redirect(f"./qa_question_timer/{session_id}?minutes=2")
