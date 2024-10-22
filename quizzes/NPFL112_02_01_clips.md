@@ -6,13 +6,13 @@
 2. Two: Oceania and Europe.
 
 
-# Why is each country on four rows?
+## Why is each country on four rows?
 
 1. The table just repeats rows for each country. 
 2. (X) The table shows the life expectancy, population size, and GDP per capita of each country in years 1992, 1997, 2002, and 2007.
 
 
-# On which continent are Australia and New Zealand located?
+## On which continent are Australia and New Zealand located?
 
 1. Australia
 2. (X) Oceania
