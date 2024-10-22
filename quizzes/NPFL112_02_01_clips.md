@@ -40,9 +40,9 @@
 
 ## Clip 3: How will you obtain the country column as a **vector** (or factor, but not a data frame with one column)
 
-1. ```df[, "country"]```
-2. ```df[1]```
-3. (X)```df$country ```
+1. df[, "country"]
+2. df[1]
+3. (X) df$country 
 
 
 ## Clip 5: Does the table to the right show any aggregation of variables?
@@ -53,8 +53,8 @@
 
 ## Clip 6: Which code snippet will produce the table to the right? 
 
-1. ```df[1:3, 3] ```
-2. (X) ```df[3,c(1:3)]```
+1. df[1:3, 3] 
+2. (X) df[3,c(1:3)]
 
 
 ## Clip 7: We obtained the right table from the left table by grouping the data by countries and extracting the row with the lowest year for each country. 
