@@ -1,4 +1,4 @@
-# Intro to ML: Lecture 1 Recap
+# Intro to ML: Lecture 1 Recap (Basic concepts, Linear Regression)
 
 ## What is the difference between classification and regression?
 

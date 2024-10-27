@@ -1,4 +1,4 @@
-# Intro to ML: Lecture 4 Recap
+# Intro to ML: Lecture 4 Recap (Generalized Linear Models, Softmax, MLP)
 
 ## The weight update in SGD for logistic regression is
 

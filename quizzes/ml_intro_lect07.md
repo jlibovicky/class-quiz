@@ -1,4 +1,4 @@
-# Intro to ML: Lecture 7 Recap (k nearest neighbors, Naive Bayes)
+# Intro to ML: Lecture 7 Recap (k Nearest Neighbors, Naive Bayes)
 
 ## Select a false statement about the $k$ nearest neighbors classifier.
 

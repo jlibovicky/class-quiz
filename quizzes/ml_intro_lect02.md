@@ -1,4 +1,4 @@
-# Intro to ML: Lecture 2 Recap
+# Intro to ML: Lecture 2 Recap (Regularization, Hyperparameters, SGD)
 
 ## What is regularization?
 

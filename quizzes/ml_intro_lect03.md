@@ -1,4 +1,4 @@
-# Intro to ML: Lecture 3 Recap
+# Intro to ML: Lecture 3 Recap (Perceptron, Information Theory, Logistic Regression)
 
 ## Two sets of $D$-dimensional points $\boldsymbol{X_1}$ and $\boldsymbol{X_2}$ are linearly separable
 
