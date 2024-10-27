@@ -75,7 +75,7 @@ def load_app_state() -> None:
             qa_sessions.update({
                 session_id: QASession.from_json_dict(
                     session_dict, manager)
-                for session_id, session_dict in loaded_qa_sessions})
+                for session_id, session_dict in loaded_qa_sessions.items()})
         last_qa_save_timestamp.value = datetime.datetime.now().timestamp()
 
 
