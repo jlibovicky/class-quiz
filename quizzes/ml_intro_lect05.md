@@ -12,7 +12,7 @@
 
 1. Multilayer perceptron can approximate any continuous function on a closed interval regardless of the hidden layer size.
 2. (X) A multi-layer neural network with a sufficient number of hidden units can approximate any continuous function on a closed interval.
-3. Only networks with $\tahn$ activations can approximate continuous functions.
+3. Only networks with $\tanh$ activations can approximate continuous functions.
 4. The theorem only applies to networks trained on large datasets.
 
 
@@ -34,15 +34,16 @@
 
 ## In terms of true positives (TP), false positives (FP), false negatives (FN), and true negatives (TN), how are precision and recall defined?
 
-1. Precision = $\frac{\text{TP}}{\text{TP} + \text{FN}}$; Recall = $\frac{\text{TP}}{\text{TP} + \text{FP}} \)
-2. (X) Precision = $\frac{\text{TP}}{\text{TP} + \text{FP}}$; Recall = $\frac{\text{TP}}{\text{TP} + \text{FN}} \)
-3. Precision = $\frac{\text{TP}}{\text{TP} + \text{TN}}$; Recall = $\frac{\text{TP}}{\text{TP} + \text{FP}} \)
-4. Precision = $\frac{\text{TP} + \text{FP}}{\text{TP}}$; Recall = $\frac{\text{TP} + \text{FN}}{\text{TP}} \)
+1. Precision = $\frac{\text{TP}}{\text{TP} + \text{FN}}$; Recall = $\frac{\text{TP}}{\text{TP} + \text{FP}}$
+2. (X) Precision = $\frac{\text{TP}}{\text{TP} + \text{FP}}$; Recall = $\frac{\text{TP}}{\text{TP} + \text{FN}}$
+3. Precision = $\frac{\text{TP}}{\text{TP} + \text{TN}}$; Recall = $\frac{\text{TP}}{\text{TP} + \text{FP}}$
+4. Precision = $\frac{\text{TP} + \text{FP}}{\text{TP}}$; Recall = $\frac{\text{TP} + \text{FN}}{\text{TP}}$
 
 
-## When precision is 1% and recall is 100%, what is the value of F-score?
+## When precision (P) is 1% and recall (R) is 100%, what is the value of F-score?
 
-1. (X) 1.98%
-2. 10%
-3. 50.5%
-4. 100%
+1. $1\% = \min(P, R)$
+2. (X) $1.98\% \approx \frac{2PR}{P+R}$
+3. $10\% = \frac{1}{2}(P + R)$
+4. $50.5\% = \sqrt{P\cdot R}$
+5. $100\% = \max(P, R)$
