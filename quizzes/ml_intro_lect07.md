@@ -36,8 +36,8 @@
 
 1. Normal distribution with zero mean and unit variance.
 2. Squared distance to the mean of the class.
-3. Normal distribution with mean $\frac{1}{|\mathcal{C_k}|}\sum_i x_i,d \cdot \mathbb{1}[\boldsymbol x_i \in \mathcal{C_k}]$ and unit variance.
-4. (X) Normal distribution with mean $\frac{1}{|\mathcal{C_k}|}\sum_i x_i,d \cdot \mathbb{1}[\boldsymbol x_i \in \mathcal{C_k}]$ and corresponding variance.
+3. Normal distribution with mean $\frac{1}{|\mathcal{C_k}|}\sum_i x_{i,d} \cdot \mathbb{1}[\boldsymbol x_i \in \mathcal{C_k}]$ and unit variance.
+4. (X) Normal distribution with mean $\frac{1}{|\mathcal{C_k}|}\sum_i x_{i,d} \cdot \mathbb{1}[\boldsymbol x_i \in \mathcal{C_k}]$ and corresponding variance.
 
 
 ## Select a true statement about the Bernoulli Naive Bayes classifier.
