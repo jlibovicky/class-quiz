@@ -10,10 +10,10 @@
 
 ## When we apply the Taylor on the loss function $\ell (t_i, y^{(t-1)}(\boldsymbol{x}_i) + y_t(\boldsymbol x_i))$ we get (the $'$ denotes taking derivative by $y^{(t-1)}(\boldsymbol{x}_i)$)
 
-1. (X) $\ell (t_i, y^{(t-1)}(\boldsymbol{x}_i)) + \ell'(t_i, y^{(t-1)}(\boldsymbol{x}_i)) y_t(\boldsymbol x_i) + \frac{1}{2} \ell''(t_i, y^{(t-1)}(\boldsymbol{x}_i)) y_t(\boldsymbol x_i)^2$
-2. $\ell (t_i, y^{(t-1)}(\boldsymbol{x}_i)) + \ell'(t_i, y^{(t-1)}(\boldsymbol{x}_i)) y_t(\boldsymbol x_i) + \ell''(t_i, y^{(t-1)}(\boldsymbol{x}_i)) y_t(\boldsymbol x_i)$
-3. $\ell (t_i, y^{(t-1)}(\boldsymbol{x}_i)) + \ell'(t_i, y^{(t-1)}(\boldsymbol{x}_i)) + \frac{1}{2} \ell''(t_i, y^{(t-1)}(\boldsymbol{x}_i))^2$
-4. $\ell (t_i, y^{(t-1)}(\boldsymbol{x}_i)) + 2\ell'(t_i, y^{(t-1)}(\boldsymbol{x}_i)) \ell''(t_i, y^{(t-1)}(\boldsymbol{x}_i)) y_t(\boldsymbol x_i)$
+1. (X) $\ell (t_i, y^{(t-1)}(\boldsymbol{x}_i))$ + $\ell'(t_i, y^{(t-1)}(\boldsymbol{x}_i)) y_t(\boldsymbol x_i)$ + $\frac{1}{2} \ell''(t_i, y^{(t-1)}(\boldsymbol{x}_i)) y_t(\boldsymbol x_i)^2$
+2. $\ell (t_i, y^{(t-1)}(\boldsymbol{x}_i))$ + $\ell'(t_i, y^{(t-1)}(\boldsymbol{x}_i)) y_t(\boldsymbol x_i)$ + $\ell''(t_i, y^{(t-1)}(\boldsymbol{x}_i)) y_t(\boldsymbol x_i)$
+3. $\ell (t_i, y^{(t-1)}(\boldsymbol{x}_i))$ + $\ell'(t_i, y^{(t-1)}(\boldsymbol{x}_i))$ + $\frac{1}{2} \ell''(t_i, y^{(t-1)}(\boldsymbol{x}_i))^2$
+4. $\ell (t_i, y^{(t-1)}(\boldsymbol{x}_i))$ + $2\ell'(t_i, y^{(t-1)}(\boldsymbol{x}_i)) \ell''(t_i, y^{(t-1)}(\boldsymbol{x}_i)) y_t(\boldsymbol x_i)$
 
 
 ## The splitting criterion in gradient boosted decision trees is
@@ -46,5 +46,3 @@
 2. (X) Gradient boosted decision trees are well suited for image data because each tree can capture a different combination of pixel values.
 3. Multilayer perceptrons are well suited for high-dimensional data because fully connected layers can capture complex interactions between features.
 4. Ensembling can almost always improve the performance of a single model.
-
-
