@@ -21,7 +21,7 @@
 1. We cat get the principal components by taking the eigenvectors of the covariance matrix.
 2. We can get the principal components by doing SVD of the mean-centered data matrix.
 3. The principal components are orthogonal.
-4. (X) The number of principal components is equal to the number of features.
+4. (X) The number of principal components is always equal to the number of features regardless of the number of data points.
 
 
 ## PCA is a method for
