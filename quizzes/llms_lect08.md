@@ -18,14 +18,14 @@
 3. Quantization
 4. Data compression
 
-## Which of the following is **not** used in qLoRA?
-1. Double quantization
-2. Low rank adaptation
-3. Paged optimization
-4. (X) 1.58 bit parameters
+## Which of the following statements is *false*?:
+1. RAG can retrieve additional information using a web search engine (e.g., Google).
+2. (X) RAG eliminates hallucinations by forcing the model to cite the answer sources.
+3. RAG can be implemented over a private knowledge base.
+4. The results that RAG retrieves are influenced by the content of the user prompt.
 
-## What is the Chinchilla-optimal token to parameter ratio in pre-training?
-1. 1:1
-2. 2:1
-3. 10:1
-4. (X) 20:1
+## What is the principle of test-time scaling?
+1. You can get more precise evaluation results by testing a model on multiple benchmarks.
+2. You should deploy large-scale models only along with the appropriate test suite.
+3. You need to use large-scale models to pass standardized examination tests.
+4. (X) You can achieve better results by giving the model more computational time during inference.
