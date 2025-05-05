@@ -1,8 +1,8 @@
 # Large Language Models: Lecture 8 Quiz
 
 ## What is usually the most in-demand computational resource for fine-tuning LLM?
-1. (X) Disk space
-2. VRAM (GPU Memory)
+1. Disk space
+2. (X) VRAM (GPU Memory)
 3. Inference time
 4. RAM (CPU Memory)
 
