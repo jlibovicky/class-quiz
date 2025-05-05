@@ -18,7 +18,7 @@
 3. Quantization
 4. Data compression
 
-## Which of the following statements is *false*?:
+## Which of the following statements is *false*?
 1. RAG can retrieve additional information using a web search engine (e.g., Google).
 2. (X) RAG eliminates hallucinations by forcing the model to cite the answer sources.
 3. RAG can be implemented over a private knowledge base.
@@ -28,4 +28,4 @@
 1. You can get more precise evaluation results by testing a model on multiple benchmarks.
 2. You should deploy large-scale models only along with the appropriate test suite.
 3. You need to use large-scale models to pass standardized examination tests.
-4. (X) You can achieve better results by giving the model more computational time during inference.
+4. (X) You can achieve better results by using more computational time during model inference.
