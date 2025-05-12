@@ -1,44 +1,35 @@
-# Large Language Models: Lecture 10 Quiz (Speech)
+# Large Language Models: Lecture Quiz -- Multimodality
 
-## Why is a practical bottleneck for not directly inputting 16 kHz wav into Transformer?
+## Text normalization in TTS: What is the most recommended method for rewriting acronyms, abbreviations, numerals, and symbols into their inflected word forms?
+1. LLM with in-context learning
+2. Lookup in a dictionary
+3. (X) Generate all inflected forms using a dictionary and rules, score them with a small LM, and select the top-scoring variant
+4. Rule-based approach
+
+## What is the most common method for integrating raw speech into multimodal LLMs directly, without intermediate text transcription?
+
+1. Convert speech to text using automatic speech recognition (ASR) and feed the text directly into the LLM.
+2. (X) Use a speech encoder model to embed the speech and interleave it with the prompt.
+3. Train the LLM from scratch using raw audio waveforms as input.
+4. Use a speech-to-image model and feed spectrogram images into a vision-language model.
+
+## What is a key practical bottleneck that prevents directly feeding 16 kHz raw audio waveforms into a Transformer model?
 
 1. (X) Quadratic complexity of self-attention
-2. Data storage space
-3. 16kHz can not record the sensible speech frequencies
-4. Not enough unlabeled training data
+2. Large data storage requirements
+3. 16 kHz sampling rate cannot capture all audible speech frequencies
+4. Lack of sufficient unlabeled training data for raw waveform models
 
-## What is **NOT** the advantage of MFCC over Wav2vec?
+## Why is contrastive learning used as image-text pre-training objective?
 
-1. (X) Noise sensitivity
-2. Interpretability
-3. Data dependency
-4. Computational cost
+1. Both negative and positive examples are needed to match the visual and the textual meaning
+2. We want to align both the visual and the textual tokens
+3. (X) For dragging the positive representations closer to each other, while pushing the negative ones away 
+4. To assign a higher distance between the visual and the text embeddings
 
-## What is **NOT** a spectrogram?
+## Which of the following is NOT a common method for fusing visual and text representations in multimodal LLMs?
 
-1. Human eye readable representation of speech
-2. (X) A soundwave plot: air vibration vs. time
-3. Fourier decomposition of sound wave into frequencies
-4. A soundwave heatmap: vibration frequency intensity vs. time
-
-## What is **NOT** included in latency of simultaneous translation?
-
-1. Time between the word was produced by the speaker and system translating the corresponding word.
-2. The transmission time between system components
-3. Waiting for the correct translation context
-4. Model processing time
-5. (X) Time between the word was translated and presented to the user
-
-## How can we say which simultaneous policy is better? Which of their attributes do we compare?
-
-1. (X) The latency-quality trade-off on a test set
-2. Their translation quality
-3. Their latency
-4. The number of citations
-
-## What is the advantage of LocalAgreement simultaneous policy over wait-k?
-
-1. Maximum wait time is limited
-2. (X) Self-adaptive wait time by language and content complexity
-3. It is more recent
-4. Does not assume equal source and target length
+1. Early fusion: raw image features and text inputs are combined at the input level before any deep modality-specific encoding, and processed jointly through a shared transformer
+2. Cross-attention
+3. Concatenation: projecting the patch embeddings with MLP and concatenating then to the input token embeddings
+4. (X) Outer product: multiply the visual and the text tokens with outer product followed by various normalization
