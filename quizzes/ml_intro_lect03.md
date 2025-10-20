@@ -43,7 +43,7 @@
 ## Select a false statement about logistic regression.
 
 1. It models binary classification using Bernoulli distribution.
-2. $P(C_1|\boldsymbol{x},\boldsymbol{w}) = \frac{1}{1 - \exp(-\boldsymbol{x}^T\boldsymbol{w})}$, $P(C_0 | \boldsymbol{x}, \boldsymbol{w}) = 1 - P(C_1| \boldsymbol{x}, \boldsymbol{w})$.
+2. $P(C_1|\boldsymbol{x},\boldsymbol{w}) = \frac{1}{1 + \exp(-\boldsymbol{x}^T\boldsymbol{w})}$, $P(C_0 | \boldsymbol{x}, \boldsymbol{w}) = 1 - P(C_1| \boldsymbol{x}, \boldsymbol{w})$.
 3. With fixed parameters $\boldsymbol{w}$, it leads to the same classification as the perceptron model.
 4. (X) It is a results of applying the maximum likelihood estimation when we assume that the errors are normally distributed.
 
