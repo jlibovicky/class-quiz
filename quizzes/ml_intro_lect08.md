@@ -24,6 +24,13 @@
 4. Pearson correlation is ideal value, whereas Spearman correlation is an estimate from the data.
 
 
+## What is the difference between Spearman correlation $\rho$ and Kendal's $\tau$?
+
+1. $\rho$ is inversely proportional to $\tau$.
+2. (X) They are different metrics for quantifying rank correlation.
+3. They are equivalent up to a constant.
+4. Spearman correlation is considered obsolete and in newer papers replaced by Kendal's $\tau$.
+
 ## Cohen's $\kappa$ quantifies
 
 1. normalized Spearman correlation between ranking by two annotators.
@@ -32,20 +39,9 @@
 4. the upper bound of a classifier accuracy trained on data from the given annotation.
 
 
-## Select a **false** statement about model ensembling.
+## What is mean reciprocal rank (MRR) used for?
 
-1. It works best for models with uncorrelated errors.
-2. It suffers from **diminishing returns**, i.e., adding more and more models brings less and less improvement.
-3. It is a form of regularization because it reduces the **representational capacity** of the model.
-4. It is **averaging the predictions** of multiple models.
-5. (X) For classifiers with uncorrelated errors, the expected **gain** from ensembling **grows linearly** with the number of models.
-
-
-## What is knowledge distillation?
-
-1. (X) Training a model to predict the output of a bigger model or an ensemble of models.
-2. Searching for a small model by gradually decreasing the number of parameters.
-3. Training a model with a smoothed target distribution, sometimes called label smoothing.
-4. Training a model with a regularizer that penalizes the number of parameters.
-
-
+1. Evaluation of inter-annotator agreement for regression tasks.
+2. Evaluation of ranking tasks.
+3. Evaluation of multilabel classification with very imbalanced classes.
+4. Assessing feature importance of linear models.

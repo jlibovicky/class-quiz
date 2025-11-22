@@ -1,5 +1,21 @@
 # Intro to ML: Lecture 9 Recap (Decision Trees, Random Forests)
 
+## Select a **false** statement about model ensembling.
+
+1. It works best for models with uncorrelated errors.
+2. It suffers from **diminishing returns**, i.e., adding more and more models brings less and less improvement.
+3. It is a form of regularization because it reduces the **representational capacity** of the model.
+4. It is **averaging the predictions** of multiple models.
+5. (X) For classifiers with uncorrelated errors, the expected **gain** from ensembling **grows linearly** with the number of models.
+
+
+## What is knowledge distillation?
+
+1. (X) Training a model to predict the output of a bigger model or an ensemble of models.
+2. Searching for a small model by gradually decreasing the number of parameters.
+3. Training a model with a smoothed target distribution, sometimes called label smoothing.
+4. Training a model with a regularizer that penalizes the number of parameters.
+
 ## Select a **false stament** about training a decision tree.
 
 1. We start with a single node.
