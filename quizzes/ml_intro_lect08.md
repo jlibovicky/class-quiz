@@ -42,6 +42,6 @@
 ## What is mean reciprocal rank (MRR) used for?
 
 1. Evaluation of inter-annotator agreement for regression tasks.
-2. Evaluation of ranking tasks.
+2. (X) Evaluation of ranking tasks.
 3. Evaluation of multilabel classification with very imbalanced classes.
 4. Assessing feature importance of linear models.
