@@ -113,6 +113,21 @@ scheduler.add_job(save_app_state, "interval", seconds=60)
 scheduler.start()
 
 
+# The app runs behind a proxy under a path prefix it does not know about, so
+# all URLs must be relative. Never let Werkzeug make redirects absolute.
+app.response_class.autocorrect_location_header = False
+
+
+def relative_root() -> str:
+    """Relative URL of the app root as seen from the current request."""
+    return "../" * (flask.request.path.count("/") - 1) or "./"
+
+
+@app.context_processor
+def inject_relative_root() -> dict:
+    return {"root": relative_root()}
+
+
 @app.route("/script.js")
 def script():
     return flask.send_file("script.js")
@@ -538,9 +553,10 @@ def attendance_generate_keys():
     except ValueError:
         count = 0
     if not 1 <= count <= MAX_KEYS_PER_BATCH:
-        return flask.redirect("../attendance_keys?" + urllib.parse.urlencode({
-            "message": f"Enter a number of keys between 1 and "
-                       f"{MAX_KEYS_PER_BATCH}."}))
+        return flask.redirect(
+            relative_root() + "attendance_keys?" + urllib.parse.urlencode({
+                "message": f"Enter a number of keys between 1 and "
+                           f"{MAX_KEYS_PER_BATCH}."}))
 
     batch = flask.request.form.get("batch", "").strip()
     if not batch:
@@ -559,8 +575,9 @@ def attendance_generate_keys():
     message = f"Generated {count} keys in batch '{batch}'."
     if revoked_count:
         message = f"Invalidated {revoked_count} unused keys. " + message
-    return flask.redirect("print?" + urllib.parse.urlencode(
-        {"batch": batch, "message": message}))
+    return flask.redirect(
+        relative_root() + "attendance_keys/print?" + urllib.parse.urlencode(
+            {"batch": batch, "message": message}))
 
 
 @app.route("/attendance_keys/revoke", methods=["POST"])
@@ -586,12 +603,14 @@ def attendance_revoke_keys():
                 if key.strip().upper() not in attendance_records]
         description = "listed keys"
     else:
-        return flask.redirect("../attendance_keys?" + urllib.parse.urlencode(
-            {"message": "Nothing to invalidate."}))
+        return flask.redirect(
+            relative_root() + "attendance_keys?" + urllib.parse.urlencode(
+                {"message": "Nothing to invalidate."}))
 
     revoked_count = key_store.revoke(keys)
-    return flask.redirect("../attendance_keys?" + urllib.parse.urlencode(
-        {"message": f"Invalidated {revoked_count} {description}."}))
+    return flask.redirect(
+        relative_root() + "attendance_keys?" + urllib.parse.urlencode(
+            {"message": f"Invalidated {revoked_count} {description}."}))
 
 
 @app.route("/attendance_keys/print")
