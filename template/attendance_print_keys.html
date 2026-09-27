@@ -28,7 +28,10 @@
     $(document).ready(function() {
         $(".qr").each(function() {
             new QRCode(this, {
-                text: $(this).data("url"),
+                // Resolved in the browser, so that the URL includes the
+                // path prefix under which the app runs behind a proxy.
+                text: new URL("../attend/" + $(this).attr("data-key"),
+                              window.location.href).href,
                 width: 110,
                 height: 110,
                 correctLevel: QRCode.CorrectLevel.M
@@ -49,12 +52,12 @@
         {% if batch is not none %}in batch <tt>{{ batch }}</tt>{% endif %}
     </h1>
     <p>Print this page and cut along the lines. Each slip works exactly once.</p>
-    <a href="{{ url_for('attendance_keys') }}">Back to key management</a>
+    <a href="../attendance_keys">Back to key management</a>
 </div>
 
 {% for entry in entries %}
 <div class="slip">
-    <div class="qr" data-url="{{ base_url }}{{ entry.key }}"></div>
+    <div class="qr" data-key="{{ entry.key }}"></div>
     <div class="code">{{ entry.key }}</div>
 </div>
 {% endfor %}

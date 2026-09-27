@@ -13,7 +13,7 @@
 <div class="container py-4" style="max-width: 32em">
     <h1 class="h3 mb-4">Check in to class</h1>
 
-    <form method="POST" action="{{ url_for('attendance_checkin', key=key) }}">
+    <form method="POST" action="{{ key|urlencode }}">
         {% if slots|length > 1 %}
         <div class="mb-3">
             <label class="form-label">Which class are you attending?</label>

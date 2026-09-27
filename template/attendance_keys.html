@@ -22,8 +22,8 @@
 <h1>Check-in keys</h1>
 
 <p>
-    <a href="{{ url_for('attendance_dashboard') }}">Attendance dashboard</a> |
-    <a href="{{ url_for('attendance_print_keys') }}">Print all unused keys</a>
+    <a href="attendance">Attendance dashboard</a> |
+    <a href="attendance_keys/print">Print all unused keys</a>
 </p>
 
 {% if message %}
@@ -39,7 +39,7 @@
 
 <h2 class="h4 mt-4">Generate new keys</h2>
 
-<form method="POST" action="{{ url_for('attendance_generate_keys') }}"
+<form method="POST" action="attendance_keys/generate"
       class="row g-3 align-items-end mb-4">
     <div class="col-auto">
         <label for="count" class="form-label">How many</label>
@@ -91,8 +91,8 @@
         <td class="text-center">{{ batch.total }}</td>
         <td class="text-end">
             <a class="btn btn-sm btn-outline-primary"
-               href="{{ url_for('attendance_print_keys', batch=batch.batch) }}">Print</a>
-            <form method="POST" action="{{ url_for('attendance_revoke_keys') }}"
+               href="attendance_keys/print?batch={{ batch.batch|urlencode }}">Print</a>
+            <form method="POST" action="attendance_keys/revoke"
                   class="d-inline"
                   data-confirm="Invalidate {{ batch.unused }} unused keys of batch '{{ batch.batch }}'? Printed slips with these keys will stop working.">
                 <input type="hidden" name="scope" value="batch">
@@ -113,7 +113,7 @@
 
 <h2 class="h4 mt-4">Invalidate individual keys</h2>
 
-<form method="POST" action="{{ url_for('attendance_revoke_keys') }}"
+<form method="POST" action="attendance_keys/revoke"
       class="mb-4"
       data-confirm="Invalidate the listed keys?">
     <input type="hidden" name="scope" value="keys">
@@ -129,7 +129,7 @@
 
 <h2 class="h4 mt-4">Invalidate everything</h2>
 
-<form method="POST" action="{{ url_for('attendance_revoke_keys') }}"
+<form method="POST" action="attendance_keys/revoke"
       data-confirm="Invalidate all {{ unused_count }} unused keys? Every printed slip that has not been used yet will stop working.">
     <input type="hidden" name="scope" value="all">
     <button type="submit" class="btn btn-danger"
