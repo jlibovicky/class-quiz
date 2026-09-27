@@ -3,6 +3,8 @@
 import hashlib
 from typing import Tuple
 import argparse
+import csv
+import io
 import json
 import datetime
 from multiprocessing import Manager
@@ -15,6 +17,9 @@ from flask import Flask
 from flask_httpauth import HTTPBasicAuth
 from markdown import markdown
 
+from attendance import (
+    Attendance, KeyStore, Schedule, attendance_summary, attended_lecture,
+    normalize_login)
 from qa_session import QASession
 from quiz import parse_markdown_quiz
 
@@ -49,9 +54,20 @@ failed_quizzes = manager.list()
 
 qa_sessions = manager.dict()
 
+# Key of a used one-time link -> the check-in it was used for.
+attendance_records = manager.dict()
+last_attendance_save_timestamp = manager.Value("f", 0.0)
+last_attendance_action_timestamp = manager.Value("f", 0.0)
+
+SCHEDULE_FILE = "schedule.csv"
+ATTENDANCE_KEYS_FILE = "attendance_keys.txt"
+schedule = Schedule(SCHEDULE_FILE)
+key_store = KeyStore(ATTENDANCE_KEYS_FILE)
+
 
 ANSWER_COUNTS_FILE = "answer_counts.json"
 QA_DATA_FILE = "qa_data.json"
+ATTENDANCE_FILE = "attendance.json"
 
 def save_app_state() -> None:
     if last_quiz_answer_timestamp.value > last_quiz_save_timestamp.value:
@@ -62,6 +78,12 @@ def save_app_state() -> None:
         with open(QA_DATA_FILE, "w", encoding="utf-8") as f_json:
             json.dump({qa_name: session.to_json() for qa_name, session in qa_sessions.items()}, f_json)
         last_qa_save_timestamp.value = datetime.datetime.now().timestamp()
+    if last_attendance_action_timestamp.value > last_attendance_save_timestamp.value:
+        with open(ATTENDANCE_FILE, "w", encoding="utf-8") as f_json:
+            json.dump(
+                {key: record.to_json()
+                 for key, record in attendance_records.items()}, f_json)
+        last_attendance_save_timestamp.value = datetime.datetime.now().timestamp()
 
 
 def load_app_state() -> None:
@@ -77,6 +99,12 @@ def load_app_state() -> None:
                     session_dict, manager)
                 for session_id, session_dict in loaded_qa_sessions.items()})
         last_qa_save_timestamp.value = datetime.datetime.now().timestamp()
+    if os.path.exists(ATTENDANCE_FILE):
+        with open(ATTENDANCE_FILE, "r", encoding="utf-8") as f_json:
+            attendance_records.update({
+                key: Attendance.from_json_dict(record)
+                for key, record in json.load(f_json).items()})
+        last_attendance_save_timestamp.value = datetime.datetime.now().timestamp()
 
 
 scheduler = BackgroundScheduler(daemon=True)
@@ -184,6 +212,8 @@ def timer(quiz_id: str) -> Tuple[str, int]:
 def github_update() -> Tuple[str, int]:
     subprocess.run(["git", "pull"], check=False)
     load_quizes()
+    schedule.reload()
+    key_store.reload()
     return ("", 200)
 
 
@@ -298,6 +328,288 @@ def qa_results(session_id: str) -> Tuple[str, int]:
         session=qa_sessions[session_id]), 200
 
 
+COOKIE_MAX_AGE = 365 * 24 * 3600
+MAX_KEYS_PER_BATCH = 500
+
+
+def attendance_message(
+        icon: str, title: str, message: str, status: int,
+        detail: str = "") -> Tuple[str, int]:
+    return flask.render_template(
+        "attendance_message.html",
+        icon=icon, title=title, message=message, detail=detail), status
+
+
+def next_class_hint(now: datetime.datetime) -> str:
+    """Human-readable description of the next class in the schedule."""
+    upcoming = [slot for slot in schedule.slots if slot.start > now]
+    if not upcoming:
+        return ""
+    slot = min(upcoming, key=lambda s: s.start)
+    return f"The next class is {slot.course_code} on {slot.start:%Y-%m-%d %H:%M}."
+
+
+@app.route("/attend/<key>")
+def attendance_form(key: str) -> Tuple[str, int]:
+    key = key.strip().upper()
+    now = datetime.datetime.now()
+
+    if not key_store.is_valid(key):
+        return attendance_message(
+            "✗", "Unknown link",
+            "This check-in link is not valid.", 404)
+
+    if key in attendance_records:
+        record = attendance_records[key]
+        return attendance_message(
+            "✗", "Link already used",
+            "This check-in link has already been used.", 410,
+            detail=(f"Used by {record.name} on "
+                    f"{record.time:%Y-%m-%d %H:%M}."))
+
+    open_slots = schedule.open_slots(now)
+    if not open_slots:
+        return attendance_message(
+            "🕒", "No class right now",
+            "There is no class open for check-in at the moment. "
+            "Your link has not been used up.", 200,
+            detail=next_class_hint(now))
+
+    return flask.render_template(
+        "attendance_form.html",
+        key=key,
+        slots=open_slots,
+        name=flask.request.cookies.get("student_name", ""),
+        login=flask.request.cookies.get("student_login", "")), 200
+
+
+@app.route("/attend/<key>", methods=["POST"])
+def attendance_checkin(key: str):
+    key = key.strip().upper()
+    now = datetime.datetime.now()
+
+    if not key_store.is_valid(key):
+        return attendance_message(
+            "✗", "Unknown link",
+            "This check-in link is not valid.", 404)
+
+    if key in attendance_records:
+        record = attendance_records[key]
+        return attendance_message(
+            "✗", "Link already used",
+            "This check-in link has already been used.", 410,
+            detail=f"Used by {record.name} on {record.time:%Y-%m-%d %H:%M}.")
+
+    name = flask.request.form.get("name", "").strip()
+    login = normalize_login(flask.request.form.get("login", ""))
+    if not name or not login:
+        return attendance_message(
+            "✗", "Missing details",
+            "Please fill in both your name and your SIS login / UKČO.", 400)
+
+    slot = schedule.slot_by_id(flask.request.form.get("slot_id", ""))
+    if slot is None or not slot.is_open_at(now):
+        return attendance_message(
+            "🕒", "Class not open",
+            "The selected class is not open for check-in. "
+            "Your link has not been used up.", 400,
+            detail=next_class_hint(now))
+
+    record = Attendance(
+        key=key, name=name, login=login,
+        course_code=slot.course_code, lecture_code=slot.lecture_code,
+        slot_id=slot.slot_id, timestamp=now.timestamp())
+
+    # The same lecture is taught twice (Czech and English), so a student who
+    # checks in for both variants is still counted only once.
+    previous = attended_lecture(
+        list(attendance_records.values()), login,
+        slot.course_code, slot.lecture_code)
+
+    attendance_records[key] = record
+    last_attendance_action_timestamp.value = now.timestamp()
+
+    attended_count = len({
+        other.lecture_code for other in attendance_records.values()
+        if other.login == login and other.course_code == slot.course_code})
+
+    response = flask.make_response(flask.render_template(
+        "attendance_done.html",
+        record=record,
+        duplicate=previous is not None,
+        attended_count=attended_count))
+    for cookie_name, value in [
+            ("student_name", name), ("student_login", login)]:
+        response.set_cookie(
+            cookie_name, value, max_age=COOKIE_MAX_AGE, samesite="Lax")
+    return response
+
+
+@app.route("/attendance")
+@auth.login_required
+def attendance_dashboard() -> Tuple[str, int]:
+    schedule.refresh_if_changed()
+    key_store.refresh_if_changed()
+    records = list(attendance_records.values())
+    summary = attendance_summary(records)
+
+    course_codes = schedule.course_codes
+    lecture_codes = {
+        course_code: schedule.lecture_codes(course_code)
+        for course_code in course_codes}
+    # Lectures that students checked in for but that are no longer scheduled.
+    for course_code in course_codes:
+        for student in summary.get(course_code, {}).values():
+            for lecture_code in student["lecture_codes"]:
+                if lecture_code not in lecture_codes[course_code]:
+                    lecture_codes[course_code].append(lecture_code)
+
+    return flask.render_template(
+        "attendance_dashboard.html",
+        schedule=schedule,
+        summary=summary,
+        course_codes=course_codes,
+        lecture_codes=lecture_codes,
+        orphaned_courses=sorted(set(summary) - set(course_codes)),
+        open_slots=schedule.open_slots(datetime.datetime.now()),
+        total_key_count=len(key_store.keys),
+        unused_key_count=sum(
+            1 for k in key_store.keys if k not in attendance_records)), 200
+
+
+@app.route("/attendance.csv")
+@auth.login_required
+def attendance_csv():
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow([
+        "login", "name", "course_code", "lecture_code", "slot_id",
+        "timestamp", "key"])
+    for record in sorted(
+            attendance_records.values(), key=lambda r: r.timestamp):
+        writer.writerow([
+            record.login, record.name, record.course_code,
+            record.lecture_code, record.slot_id,
+            record.time.isoformat(timespec="seconds"), record.key])
+    return flask.Response(
+        output.getvalue(), mimetype="text/csv",
+        headers={
+            "Content-Disposition": "attachment; filename=attendance.csv"})
+
+
+def key_batch_stats() -> list:
+    """Per-batch counts of used and unused keys, newest batch first."""
+    stats = {}
+    for entry in key_store.entries:
+        batch = stats.setdefault(
+            entry.batch, {"batch": entry.batch, "used": 0, "unused": 0,
+                          "total": 0})
+        batch["total"] += 1
+        if entry.key in attendance_records:
+            batch["used"] += 1
+        else:
+            batch["unused"] += 1
+    return sorted(stats.values(), key=lambda b: b["batch"], reverse=True)
+
+
+@app.route("/attendance_keys")
+@auth.login_required
+def attendance_keys() -> Tuple[str, int]:
+    key_store.refresh_if_changed()
+    unused = [entry for entry in key_store.entries
+              if entry.key not in attendance_records]
+    return flask.render_template(
+        "attendance_keys.html",
+        batches=key_batch_stats(),
+        total_count=len(key_store.entries),
+        unused_count=len(unused),
+        used_count=len(key_store.entries) - len(unused),
+        revoked_count=len(key_store.revoked),
+        default_batch=datetime.datetime.now().strftime("%Y-%m-%d"),
+        message=flask.request.args.get("message", "")), 200
+
+
+@app.route("/attendance_keys/generate", methods=["POST"])
+@auth.login_required
+def attendance_generate_keys():
+    try:
+        count = int(flask.request.form.get("count", "0"))
+    except ValueError:
+        count = 0
+    if not 1 <= count <= MAX_KEYS_PER_BATCH:
+        return flask.redirect(flask.url_for(
+            "attendance_keys",
+            message=f"Enter a number of keys between 1 and "
+                    f"{MAX_KEYS_PER_BATCH}."))
+
+    batch = flask.request.form.get("batch", "").strip()
+    if not batch:
+        batch = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+    # The batch name goes into a tab-separated file and into a URL.
+    batch = batch.replace("\t", " ")
+
+    revoked_count = 0
+    if flask.request.form.get("revoke_first"):
+        revoked_count = key_store.revoke([
+            entry.key for entry in key_store.entries
+            if entry.key not in attendance_records])
+
+    key_store.generate(count, batch)
+
+    message = f"Generated {count} keys in batch '{batch}'."
+    if revoked_count:
+        message = f"Invalidated {revoked_count} unused keys. " + message
+    return flask.redirect(flask.url_for(
+        "attendance_print_keys", batch=batch, message=message))
+
+
+@app.route("/attendance_keys/revoke", methods=["POST"])
+@auth.login_required
+def attendance_revoke_keys():
+    scope = flask.request.form.get("scope", "")
+    key_store.refresh_if_changed()
+
+    if scope == "batch":
+        batch = flask.request.form.get("batch", "")
+        keys = [entry.key for entry in key_store.entries
+                if entry.batch == batch and entry.key not in attendance_records]
+        description = f"unused keys of batch '{batch}'"
+    elif scope == "all":
+        keys = [entry.key for entry in key_store.entries
+                if entry.key not in attendance_records]
+        description = "unused keys"
+    elif scope == "keys":
+        listed = flask.request.form.get("keys", "").replace(",", " ").split()
+        # An already used key is spent anyway; revoking it would only remove
+        # it from the statistics of its batch.
+        keys = [key.strip().upper() for key in listed
+                if key.strip().upper() not in attendance_records]
+        description = "listed keys"
+    else:
+        return flask.redirect(flask.url_for(
+            "attendance_keys", message="Nothing to invalidate."))
+
+    revoked_count = key_store.revoke(keys)
+    return flask.redirect(flask.url_for(
+        "attendance_keys",
+        message=f"Invalidated {revoked_count} {description}."))
+
+
+@app.route("/attendance_keys/print")
+@auth.login_required
+def attendance_print_keys() -> Tuple[str, int]:
+    key_store.refresh_if_changed()
+    batch = flask.request.args.get("batch")
+    entries = [entry for entry in key_store.entries
+               if entry.key not in attendance_records
+               and (batch is None or entry.batch == batch)]
+    base_url = flask.url_for("attendance_form", key="", _external=True)
+    return flask.render_template(
+        "attendance_print_keys.html",
+        entries=entries, batch=batch, base_url=base_url,
+        message=flask.request.args.get("message", "")), 200
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -313,11 +625,25 @@ if __name__ == "__main__":
     parser.add_argument(
         "--password", default="password",
         help="Password for teacher interface")
+    parser.add_argument(
+        "--schedule-file", default="schedule.csv",
+        help="CSV file with the class schedule")
+    parser.add_argument(
+        "--attendance-keys-file", default="attendance_keys.txt",
+        help="File with the one-time attendance keys")
+    parser.add_argument(
+        "--attendance-file", default="attendance.json",
+        help="File to store the recorded attendance in")
     args = parser.parse_args()
 
     CORRECT_PASSWORD = args.password
     QUIZ_DIR = args.quiz_dir
     ANSWER_COUNTS_FILE = args.answer_counts_file
+    ATTENDANCE_FILE = args.attendance_file
+    SCHEDULE_FILE = args.schedule_file
+    ATTENDANCE_KEYS_FILE = args.attendance_keys_file
+    schedule = Schedule(SCHEDULE_FILE)
+    key_store = KeyStore(ATTENDANCE_KEYS_FILE)
 
     load_app_state()
     load_quizes()

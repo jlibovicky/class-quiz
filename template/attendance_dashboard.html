@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Attendance</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div class="container py-4">
+
+<h1>Attendance</h1>
+
+<p>
+    <a href="{{ url_for('attendance_csv') }}">Download CSV</a> |
+    <a href="{{ url_for('attendance_keys') }}">Manage check-in keys</a> |
+    <a href="{{ url_for('index') }}">Quizzes</a>
+</p>
+
+{% if schedule.errors %}
+<div class="alert alert-danger" role="alert">
+    <h4 class="alert-heading">Problems in the schedule file</h4>
+    <ul>
+        {% for error in schedule.errors %}<li>{{ error }}</li>{% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+<div class="alert alert-secondary" role="alert">
+    {{ unused_key_count }} unused key{{ "" if unused_key_count == 1 else "s" }}
+    out of {{ total_key_count }}.
+    {% if open_slots %}
+        Currently open for check-in:
+        {% for slot in open_slots %}<tt>{{ slot.slot_id }}</tt>{{ "" if loop.last else ", " }}{% endfor %}.
+    {% else %}
+        No class is open for check-in right now.
+    {% endif %}
+</div>
+
+{% for course_code in course_codes %}
+<h2 class="mt-4">{{ course_code }}</h2>
+{% set students = summary.get(course_code, {}) %}
+{% if students %}
+<div class="table-responsive">
+<table class="table table-striped table-sm">
+    <thead>
+    <tr>
+        <th>SIS login / UKČO</th>
+        <th>Name</th>
+        {% for lecture_code in lecture_codes[course_code] %}
+        <th class="text-center"><tt>{{ lecture_code }}</tt></th>
+        {% endfor %}
+        <th class="text-center">Total</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for login, student in students.items()|sort %}
+    <tr>
+        <td><tt>{{ login }}</tt></td>
+        <td>
+            {{ student.name }}
+            {% if student.names|length > 1 %}
+            <span class="badge bg-warning text-dark"
+                  title="{{ student.names|join(', ') }}">
+                {{ student.names|length }} spellings
+            </span>
+            {% endif %}
+        </td>
+        {% for lecture_code in lecture_codes[course_code] %}
+        <td class="text-center">{{ "✓" if lecture_code in student.lecture_codes else "" }}</td>
+        {% endfor %}
+        <td class="text-center"><strong>{{ student.count }}</strong></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% else %}
+<p class="text-muted">No check-ins yet.</p>
+{% endif %}
+{% endfor %}
+
+{% if orphaned_courses %}
+<h2 class="mt-4">Check-ins for courses no longer in the schedule</h2>
+<ul>
+{% for course_code in orphaned_courses %}
+    <li><tt>{{ course_code }}</tt>: {{ summary[course_code]|length }} students</li>
+{% endfor %}
+</ul>
+{% endif %}
+
+</div>
+
+</body>
+</html>
