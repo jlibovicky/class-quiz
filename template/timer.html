@@ -26,6 +26,11 @@ MathJax = {
         minutes = parseInt(url_minutes);
     }
 
+    var url_seconds = location.search.split('seconds=')[1]
+    if (url_seconds) {
+        seconds = parseInt(url_seconds);
+    }
+
     function show_time() {
         $("#timer").text(minutes + ":" + (seconds < 10 ? "0" : "") + seconds);
     }
@@ -34,7 +39,7 @@ MathJax = {
         show_time();
         $("#timer").hide();
         $("#skip").hide();
-        $("#start").text("Start timer (" + minutes + " min)");
+        $("#start").text("Start timer (" + (minutes > 0 ? minutes + " min" : "") + (minutes > 0 && seconds > 0 ? " " : "") + (seconds > 0 ? seconds + " s" : "") + ")");
 
         let quiz_url = new URL("{{qr_code_url}}", document.baseURI).href;
 
