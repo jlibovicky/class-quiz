@@ -52,6 +52,13 @@
         {% endfor %}
         <th class="text-center">Total</th>
     </tr>
+    <tr class="table-secondary">
+        <th>Attendees</th>
+        {% for lecture_code in lecture_codes[course_code] %}
+        <th class="text-center">{% set ns = namespace(n=0) %}{% for st in students.values() %}{% if lecture_code in st.lecture_codes %}{% set ns.n = ns.n + 1 %}{% endif %}{% endfor %}{{ ns.n }}</th>
+        {% endfor %}
+        <th class="text-center">{{ students|length }}</th>
+    </tr>
     </thead>
     <tbody>
     {% for login, student in students.items()|sort %}
