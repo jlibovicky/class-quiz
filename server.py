@@ -244,7 +244,7 @@ def create_qa_session() -> Tuple[str, int]:
     last_qa_action_timestamp.value = datetime.datetime.now().timestamp()
 
     # Redirect to the QA session timer
-    return flask.redirect(f"./qa_question_timer/{session_id}?minutes=1")
+    return flask.redirect(f"./qa_question_timer/{session_id}?minutes=1&seconds=30")
 
 
 @app.route("/qa_question_timer/<path:session_id>")
