@@ -46,7 +46,6 @@
 <table class="table table-striped table-sm">
     <thead>
     <tr>
-        <th>SIS login / UKČO</th>
         <th>Name</th>
         {% for lecture_code in lecture_codes[course_code] %}
         <th class="text-center"><tt>{{ lecture_code }}</tt></th>
@@ -57,8 +56,7 @@
     <tbody>
     {% for login, student in students.items()|sort %}
     <tr>
-        <td><tt>{{ login }}</tt></td>
-        <td>
+        <td title="{{ login }}">
             {{ student.name }}
             {% if student.names|length > 1 %}
             <span class="badge bg-warning text-dark"
