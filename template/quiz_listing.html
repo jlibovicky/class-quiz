@@ -51,7 +51,7 @@
         <tr class="quiz-row">
             <td><tt>{{ quiz_id }}</tt></td>
             <td>{{ quiz.title }}</td>
-            <td>{{ quiz.last_modified }}</td>
+            <td>{{ quiz.last_modified.strftime("%Y-%m-%d %H:%M") }}</td>
             <td><a href="quiz/{{ quiz_id }}">Quiz</a></td>
             <td><a href="answer_stats/{{ quiz_id }}">Answers</a></td>
             <td>
