@@ -35,7 +35,10 @@
 
 <h1>List of available quizzes</h1>
 
-    <table class="table table-striped">
+    <input type="search" class="form-control mb-3" id="quizFilter"
+           placeholder="Filter quizzes by ID or title (space-separated words must all match)" autofocus>
+
+    <table class="table table-striped" id="quizTable">
         <tr>
             <th>Quiz ID</th>
             <th>Title</th>
@@ -45,7 +48,7 @@
             <th>Timer Page</th>
         </tr>
         {% for quiz_id, quiz in quizzes.items()|sort: %}
-        <tr>
+        <tr class="quiz-row">
             <td><tt>{{ quiz_id }}</tt></td>
             <td>{{ quiz.title }}</td>
             <td>{{ quiz.last_modified }}</td>
@@ -117,6 +120,18 @@
 
 <script>
 $(function() {
+    function applyFilter() {
+        var words = $('#quizFilter').val().toLowerCase().split(/\s+/).filter(Boolean);
+        $('#quizTable .quiz-row').each(function() {
+            var text = $(this).children().slice(0, 2).text().toLowerCase();
+            $(this).toggle(words.every(function(w) { return text.indexOf(w) !== -1; }));
+        });
+        try { sessionStorage.setItem('quizFilter', $('#quizFilter').val()); } catch (e) {}
+    }
+    try { $('#quizFilter').val(sessionStorage.getItem('quizFilter') || ''); } catch (e) {}
+    $('#quizFilter').on('input', applyFilter);
+    applyFilter();
+
     var hash = location.hash;
     if (hash) {
         var btn = document.querySelector('[data-bs-target="' + hash + '"]');
