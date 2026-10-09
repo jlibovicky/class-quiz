@@ -38,6 +38,64 @@
     {% endif %}
 </div>
 
+{% if message %}
+<div class="alert {{ "alert-success" if message_ok else "alert-warning" }}" role="alert">
+    {{ message }}
+</div>
+{% endif %}
+
+<div class="card mb-4">
+<div class="card-header">
+    <a class="text-decoration-none text-reset" data-bs-toggle="collapse"
+       href="#manual-checkin" role="button">
+        ➕ Add attendance manually
+    </a>
+</div>
+<div class="collapse{{ " show" if message }}" id="manual-checkin">
+<div class="card-body">
+<p class="text-muted small mb-3">
+    For a student who could not scan a QR code, e.g., when the printed slips
+    ran out. The record is marked as added by hand.
+</p>
+<form method="post" action="{{ root }}attendance/manual" class="row g-2 align-items-end">
+    <div class="col-md-4">
+        <label class="form-label" for="manual-name">Name</label>
+        <input class="form-control" id="manual-name" name="name" required
+               list="known-names" autocomplete="off">
+    </div>
+    <div class="col-md-3">
+        <label class="form-label" for="manual-login">SIS login / UKČO</label>
+        <input class="form-control" id="manual-login" name="login" required
+               list="known-logins" autocomplete="off">
+    </div>
+    <div class="col-md-3">
+        <label class="form-label" for="manual-slot">Class</label>
+        <select class="form-select" id="manual-slot" name="slot_id" required>
+            {% for slot in manual_slots %}
+            <option value="{{ slot.slot_id }}"
+                    {{ "selected" if slot.slot_id == preselected_slot_id }}>
+                {{ slot.date.strftime("%Y-%m-%d") }} {{ slot.label }}{{ " – open now" if slot.slot_id in open_slot_ids }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button class="btn btn-primary w-100" type="submit">Add</button>
+    </div>
+</form>
+<datalist id="known-names">
+    {% for login, name in known_students %}<option value="{{ name }}">{{ login }}</option>{% endfor %}
+</datalist>
+<datalist id="known-logins">
+    {% for login, name in known_students %}<option value="{{ login }}">{{ name }}</option>{% endfor %}
+</datalist>
+{% if not manual_slots %}
+<p class="text-danger mt-3 mb-0">The schedule contains no classes.</p>
+{% endif %}
+</div>
+</div>
+</div>
+
 {% for course_code in course_codes %}
 <h2 class="mt-4">{{ course_code }}</h2>
 {% set students = summary.get(course_code, {}) %}
@@ -73,7 +131,11 @@
             {% endif %}
         </td>
         {% for lecture_code in lecture_codes[course_code] %}
+        {% if lecture_code in student.manual_lecture_codes %}
+        <td class="text-center" title="Added manually">✓<sup>m</sup></td>
+        {% else %}
         <td class="text-center">{{ "✓" if lecture_code in student.lecture_codes else "" }}</td>
+        {% endif %}
         {% endfor %}
         <td class="text-center"><strong>{{ student.count }}</strong></td>
     </tr>

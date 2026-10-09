@@ -20,7 +20,7 @@ from markdown import markdown
 
 from attendance import (
     Attendance, KeyStore, Schedule, attendance_summary, attended_lecture,
-    normalize_login)
+    manual_key, normalize_login)
 from qa_session import QASession
 from quiz import parse_markdown_quiz
 
@@ -480,6 +480,19 @@ def attendance_dashboard() -> Tuple[str, int]:
                 if lecture_code not in lecture_codes[course_code]:
                     lecture_codes[course_code].append(lecture_code)
 
+    now = datetime.datetime.now()
+    open_slots = schedule.open_slots(now)
+    open_slot_ids = {slot.slot_id for slot in open_slots}
+
+    # The classes offered in the manual check-in form: the most recent ones
+    # first, because that is what a correction is usually about.
+    manual_slots = sorted(schedule.slots, key=lambda s: s.start, reverse=True)
+    if open_slots:
+        preselected_slot_id = open_slots[0].slot_id
+    else:
+        past = [slot for slot in manual_slots if slot.start <= now]
+        preselected_slot_id = past[0].slot_id if past else ""
+
     return flask.render_template(
         "attendance_dashboard.html",
         schedule=schedule,
@@ -487,10 +500,70 @@ def attendance_dashboard() -> Tuple[str, int]:
         course_codes=course_codes,
         lecture_codes=lecture_codes,
         orphaned_courses=sorted(set(summary) - set(course_codes)),
-        open_slots=schedule.open_slots(datetime.datetime.now()),
+        open_slots=open_slots,
+        open_slot_ids=open_slot_ids,
+        manual_slots=manual_slots,
+        preselected_slot_id=preselected_slot_id,
+        known_students=known_students(records),
+        message=flask.request.args.get("message", ""),
+        message_ok=flask.request.args.get("ok") == "1",
         total_key_count=len(key_store.keys),
         unused_key_count=sum(
             1 for k in key_store.keys if k not in attendance_records)), 200
+
+
+def known_students(records) -> list:
+    """Students seen so far, as (login, name) pairs, for form autocomplete."""
+    names = {}
+    for record in sorted(records, key=lambda r: r.timestamp):
+        names[record.login] = record.name
+    return sorted(names.items())
+
+
+def attendance_redirect(message: str, ok: bool = False):
+    params = {"message": message}
+    if ok:
+        params["ok"] = "1"
+    return flask.redirect(
+        relative_root() + "attendance?" + urllib.parse.urlencode(params))
+
+
+@app.route("/attendance/manual", methods=["POST"])
+@auth.login_required
+def attendance_manual_checkin():
+    """Record a check-in by hand, e.g., when the paper slips run out."""
+    now = datetime.datetime.now()
+    name = flask.request.form.get("name", "").strip()
+    login = normalize_login(flask.request.form.get("login", ""))
+    if not name or not login:
+        return attendance_redirect(
+            "Fill in both the student's name and their SIS login / UKČO.")
+
+    slot = schedule.slot_by_id(flask.request.form.get("slot_id", ""))
+    if slot is None:
+        return attendance_redirect("Select a class from the schedule.")
+
+    # The same lecture is counted only once per student, so an extra record
+    # would change nothing and only clutter the log.
+    previous = attended_lecture(
+        list(attendance_records.values()), login,
+        slot.course_code, slot.lecture_code)
+    if previous is not None:
+        return attendance_redirect(
+            f"{previous.name} ({login}) is already counted for "
+            f"{slot.course_code} / {slot.lecture_code} "
+            f"(checked in {previous.time:%Y-%m-%d %H:%M}).")
+
+    key = manual_key(attendance_records)
+    attendance_records[key] = Attendance(
+        key=key, name=name, login=login,
+        course_code=slot.course_code, lecture_code=slot.lecture_code,
+        slot_id=slot.slot_id, timestamp=now.timestamp(), manual=True)
+    last_attendance_action_timestamp.value = now.timestamp()
+
+    return attendance_redirect(
+        f"Added {name} ({login}) to {slot.course_code} / "
+        f"{slot.lecture_code} on {slot.date:%Y-%m-%d}.", ok=True)
 
 
 @app.route("/attendance.csv")
@@ -500,13 +573,14 @@ def attendance_csv():
     writer = csv.writer(output)
     writer.writerow([
         "login", "name", "course_code", "lecture_code", "slot_id",
-        "timestamp", "key"])
+        "timestamp", "key", "manual"])
     for record in sorted(
             attendance_records.values(), key=lambda r: r.timestamp):
         writer.writerow([
             record.login, record.name, record.course_code,
             record.lecture_code, record.slot_id,
-            record.time.isoformat(timespec="seconds"), record.key])
+            record.time.isoformat(timespec="seconds"), record.key,
+            "1" if record.manual else ""])
     return flask.Response(
         output.getvalue(), mimetype="text/csv",
         headers={

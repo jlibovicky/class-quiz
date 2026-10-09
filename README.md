@@ -91,6 +91,18 @@ student, one column per lecture code, and the total number of attended
 lectures. `<root>/attendance.csv` downloads all raw check-ins. Attendance is
 stored in `attendance.json`.
 
+The same page has an **Add attendance manually** form, for a student who could
+not scan a QR code — most often because the printed slips ran out. Fill in the
+name and the SIS login/UKČO and pick a class; any class from the schedule can
+be chosen, not just one that is currently open, so attendance can also be
+added after the fact. The class that is open right now is preselected, and the
+name and login fields autocomplete from students seen before.
+
+A manual record does not consume a one-time key; it gets a synthetic key
+starting with `MANUAL-`. Such records are marked with ✓ᵐ in the table and by a
+`manual` column in the CSV. If the student is already counted for that lecture
+code, the form says so and adds nothing.
+
 ## Defining a quiz
 
 Quizzes are defined Markdown documents. Math can be written using LaTeX in

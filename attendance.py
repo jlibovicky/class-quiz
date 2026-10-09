@@ -309,6 +309,9 @@ class KeyStore:
         return len(to_revoke)
 
 
+MANUAL_KEY_PREFIX = "MANUAL-"
+
+
 @dataclass
 class Attendance:
     """A single confirmed check-in."""
@@ -320,6 +323,7 @@ class Attendance:
     lecture_code: str
     slot_id: str
     timestamp: float
+    manual: bool = False
 
     @property
     def time(self) -> datetime.datetime:
@@ -334,6 +338,7 @@ class Attendance:
             "lecture_code": self.lecture_code,
             "slot_id": self.slot_id,
             "timestamp": self.timestamp,
+            "manual": self.manual,
         }
 
     @staticmethod
@@ -345,24 +350,44 @@ def normalize_login(login: str) -> str:
     return login.strip().lower()
 
 
+def manual_key(known_keys) -> str:
+    """A synthetic key for a check-in entered by hand by the teacher.
+
+    The prefix contains a character that cannot occur in a generated key, so
+    a manual record can never collide with a printed one-time key.
+    """
+    while True:
+        key = MANUAL_KEY_PREFIX + generate_key()
+        if key not in known_keys:
+            return key
+
+
 def attendance_summary(
         records: List[Attendance]) -> Dict[str, Dict[str, dict]]:
     """Aggregate check-ins per course and student.
 
-    Returns course_code -> login -> {name, lecture_codes, count}. A lecture
-    attended twice (e.g., in both language variants) is counted once.
+    Returns course_code -> login -> {name, lecture_codes, manual_lecture_codes,
+    count}. A lecture attended twice (e.g., in both language variants) is
+    counted once. A lecture code is listed as manual if the only check-in for
+    it was entered by hand by the teacher.
     """
     summary: Dict[str, Dict[str, dict]] = {}
     for record in sorted(records, key=lambda r: r.timestamp):
         per_course = summary.setdefault(record.course_code, {})
         student = per_course.setdefault(
             record.login, {"name": record.name, "lecture_codes": [],
-                           "names": [], "count": 0})
+                           "manual_lecture_codes": [], "names": [],
+                           "count": 0})
         student["name"] = record.name
         if record.name not in student["names"]:
             student["names"].append(record.name)
         if record.lecture_code not in student["lecture_codes"]:
             student["lecture_codes"].append(record.lecture_code)
+            if record.manual:
+                student["manual_lecture_codes"].append(record.lecture_code)
+        elif (not record.manual
+                and record.lecture_code in student["manual_lecture_codes"]):
+            student["manual_lecture_codes"].remove(record.lecture_code)
         student["count"] = len(student["lecture_codes"])
     return summary
 
