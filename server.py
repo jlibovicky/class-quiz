@@ -88,6 +88,12 @@ qa_sessions = manager.dict()
 
 # Key of a used one-time link -> the check-in it was used for.
 attendance_records = manager.dict()
+# Recording a check-in is a read-modify-write: "is this key still unused?"
+# and "store the record" have to happen as one step. Two requests with the
+# same key arriving at the same moment would otherwise both find the key
+# unused and both be recorded, which is exactly what the one-time keys are
+# meant to prevent.
+attendance_lock = manager.Lock()
 last_attendance_save_timestamp = manager.Value("f", 0.0)
 last_attendance_action_timestamp = manager.Value("f", 0.0)
 
@@ -505,18 +511,28 @@ def attendance_checkin(key: str):
         course_code=slot.course_code, lecture_code=slot.lecture_code,
         slot_id=slot.slot_id, timestamp=now.timestamp())
 
-    # The same lecture is taught twice (Czech and English), so a student who
-    # checks in for both variants is still counted only once.
-    previous = attended_lecture(
-        list(attendance_records.values()), login,
-        slot.course_code, slot.lecture_code)
+    with attendance_lock:
+        # The check above is only for a quick, friendly answer; this one
+        # decides, because nothing else may touch the key in between.
+        if key in attendance_records:
+            used = attendance_records[key]
+            return attendance_message(
+                "✗", "Link already used",
+                "This check-in link has already been used.", 410,
+                detail=f"Used on {used.time:%Y-%m-%d %H:%M}.")
 
-    attendance_records[key] = record
-    last_attendance_action_timestamp.value = now.timestamp()
+        # The same lecture is taught twice (Czech and English), so a student
+        # who checks in for both variants is still counted only once.
+        previous = attended_lecture(
+            list(attendance_records.values()), login,
+            slot.course_code, slot.lecture_code)
 
-    attended_count = len({
-        other.lecture_code for other in attendance_records.values()
-        if other.login == login and other.course_code == slot.course_code})
+        attendance_records[key] = record
+        last_attendance_action_timestamp.value = now.timestamp()
+
+        attended_count = len({
+            other.lecture_code for other in attendance_records.values()
+            if other.login == login and other.course_code == slot.course_code})
 
     return flask.render_template(
         "attendance_done.html",
@@ -607,23 +623,26 @@ def attendance_manual_checkin():
     if slot is None:
         return attendance_redirect("Select a class from the schedule.")
 
-    # The same lecture is counted only once per student, so an extra record
-    # would change nothing and only clutter the log.
-    previous = attended_lecture(
-        list(attendance_records.values()), login,
-        slot.course_code, slot.lecture_code)
-    if previous is not None:
-        return attendance_redirect(
-            f"{previous.name} ({login}) is already counted for "
-            f"{slot.course_code} / {slot.lecture_code} "
-            f"(checked in {previous.time:%Y-%m-%d %H:%M}).")
+    with attendance_lock:
+        # The same lecture is counted only once per student, so an extra
+        # record would change nothing and only clutter the log. Picking the
+        # synthetic key and storing it also has to be one step, or two
+        # submissions at once could pick the same key.
+        previous = attended_lecture(
+            list(attendance_records.values()), login,
+            slot.course_code, slot.lecture_code)
+        if previous is not None:
+            return attendance_redirect(
+                f"{previous.name} ({login}) is already counted for "
+                f"{slot.course_code} / {slot.lecture_code} "
+                f"(checked in {previous.time:%Y-%m-%d %H:%M}).")
 
-    key = manual_key(attendance_records)
-    attendance_records[key] = Attendance(
-        key=key, name=name, login=login,
-        course_code=slot.course_code, lecture_code=slot.lecture_code,
-        slot_id=slot.slot_id, timestamp=now.timestamp(), manual=True)
-    last_attendance_action_timestamp.value = now.timestamp()
+        key = manual_key(attendance_records)
+        attendance_records[key] = Attendance(
+            key=key, name=name, login=login,
+            course_code=slot.course_code, lecture_code=slot.lecture_code,
+            slot_id=slot.slot_id, timestamp=now.timestamp(), manual=True)
+        last_attendance_action_timestamp.value = now.timestamp()
 
     return attendance_redirect(
         f"Added {name} ({login}) to {slot.course_code} / "
