@@ -41,6 +41,7 @@
 
 <form method="POST" action="{{ root }}attendance_keys/generate"
       class="row g-3 align-items-end mb-4">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <div class="col-auto">
         <label for="count" class="form-label">How many</label>
         <input type="number" class="form-control" id="count" name="count"
@@ -95,6 +96,7 @@
             <form method="POST" action="{{ root }}attendance_keys/revoke"
                   class="d-inline"
                   data-confirm="Invalidate {{ batch.unused }} unused keys of batch '{{ batch.batch }}'? Printed slips with these keys will stop working.">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <input type="hidden" name="scope" value="batch">
                 <input type="hidden" name="batch" value="{{ batch.batch }}">
                 <button type="submit" class="btn btn-sm btn-outline-danger"
@@ -116,6 +118,7 @@
 <form method="POST" action="{{ root }}attendance_keys/revoke"
       class="mb-4"
       data-confirm="Invalidate the listed keys?">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <input type="hidden" name="scope" value="keys">
     <div class="mb-2">
         <input type="text" class="form-control" name="keys"
@@ -131,6 +134,7 @@
 
 <form method="POST" action="{{ root }}attendance_keys/revoke"
       data-confirm="Invalidate all {{ unused_count }} unused keys? Every printed slip that has not been used yet will stop working.">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <input type="hidden" name="scope" value="all">
     <button type="submit" class="btn btn-danger"
             {{ "disabled" if unused_count == 0 }}>

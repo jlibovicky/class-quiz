@@ -16,6 +16,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import flask
 from flask import Flask
 from flask_httpauth import HTTPBasicAuth
+from flask_wtf.csrf import CSRFError, CSRFProtect
 from markdown import markdown
 
 from attendance import (
@@ -32,6 +33,23 @@ def html(text: str) -> str:
 app = Flask(__name__, template_folder='template')
 app.jinja_env.globals.update(html=html)
 auth = HTTPBasicAuth()
+
+# CSRF protection. The teacher interface uses HTTP basic auth, which the
+# browser replays on *any* request to this server, including one triggered by
+# another web page. Without a token that only our own pages contain, such a
+# page could silently make the logged-in teacher generate or invalidate
+# attendance keys or record a check-in. Every POST is checked unless it is
+# explicitly exempted below.
+#
+# The secret key signs the session cookie the tokens live in. Set
+# CLASS_QUIZ_SECRET_KEY to keep forms that are already open working across a
+# restart; otherwise a fresh random key is used and open pages have to be
+# reloaded once after a restart.
+app.secret_key = os.environ.get("CLASS_QUIZ_SECRET_KEY") or os.urandom(32)
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Lax")
+csrf = CSRFProtect(app)
 
 
 CORRECT_PASSWORD = None
@@ -224,7 +242,11 @@ def timer(quiz_id: str) -> Tuple[str, int]:
             qr_code_url=f"../quiz/{quiz_id}"), 200
 
 
+# Called by a GitHub webhook, which cannot carry a token of ours. It is also
+# not authenticated at all, so anyone who knows the URL can trigger it; a
+# webhook secret would be the proper fix for that.
 @app.route("/github_update", methods=["POST"])
+@csrf.exempt
 def github_update() -> Tuple[str, int]:
     subprocess.run(["git", "pull"], check=False)
     load_quizes()
@@ -268,7 +290,10 @@ def qa_question_form(session_id: str) -> Tuple[str, int]:
     return flask.render_template("qa_question_form.html", session_id=session_id)
 
 
+# Asking and voting are deliberately anonymous and need no login, so there is
+# nothing a forged request could abuse that a direct request could not.
 @app.route("/qa_ask_question", methods=["POST"])
+@csrf.exempt
 def ask_question() -> Tuple[str, int]:
     # Get session ID and question text from the form
     session_id = flask.request.form["session_id"]
@@ -298,6 +323,7 @@ def qa_voting_timer(session_id: str) -> Tuple[str, int]:
 
 
 @app.route("/qa_question_vote", methods=["POST"])
+@csrf.exempt
 def qa_question_vote() -> Tuple[str, int]:
     session_id = flask.request.form["session_id"]
     question_id = int(flask.request.form["question_id"])
@@ -356,6 +382,16 @@ def attendance_message(
         icon=icon, title=title, message=message, detail=detail), status
 
 
+@app.errorhandler(CSRFError)
+def handle_csrf_error(error) -> Tuple[str, int]:
+    """A missing or stale token, e.g., on a page left open over a restart."""
+    return attendance_message(
+        "↻", "Page expired",
+        "This page was open for too long or the server was restarted. "
+        "Reload the page and submit the form again.", 400,
+        detail="Nothing has been changed.")
+
+
 def next_class_hint(now: datetime.datetime) -> str:
     """Human-readable description of the next class in the schedule."""
     upcoming = [slot for slot in schedule.slots if slot.start > now]
@@ -399,7 +435,12 @@ def attendance_form(key: str) -> Tuple[str, int]:
         login=flask.request.cookies.get("student_login", "")), 200
 
 
+# The check-in is authorised by the secret one-time key in the URL, not by
+# anything the browser attaches on its own, so a forged request would already
+# need to know the key. Students' browsers must not fail a check-in over an
+# expired token during class.
 @app.route("/attend/<key>", methods=["POST"])
+@csrf.exempt
 def attendance_checkin(key: str):
     key = key.strip().upper()
     now = datetime.datetime.now()
