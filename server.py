@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import hashlib
+import hmac
 from typing import Tuple
 import argparse
 import csv
@@ -52,10 +53,22 @@ app.config.update(
 csrf = CSRFProtect(app)
 
 
-CORRECT_PASSWORD = None
+# The teacher password. There is deliberately no default: an unset password
+# locks the teacher interface instead of opening it with something guessable.
+# Under a WSGI server, which never runs the __main__ block below, the
+# environment is the only way to set it.
+PASSWORD_ENV_VAR = "CLASS_QUIZ_PASSWORD"
+CORRECT_PASSWORD = os.environ.get(PASSWORD_ENV_VAR) or None
+
+
 @auth.verify_password
 def verify_password(_, password: str) -> bool:
-    return password == CORRECT_PASSWORD
+    if not CORRECT_PASSWORD:
+        return False
+    # Constant-time, so the comparison cannot be timed character by character.
+    # Bytes, because compare_digest rejects non-ASCII str.
+    return hmac.compare_digest(
+        (password or "").encode("utf-8"), CORRECT_PASSWORD.encode("utf-8"))
 
 
 # Stuff that needs to be shared between processes
@@ -755,8 +768,9 @@ if __name__ == "__main__":
         "--answer-counts-file", default="answer_counts.json",
         help="File to load answer counts from")
     parser.add_argument(
-        "--password", default="password",
-        help="Password for teacher interface")
+        "--password", default=None,
+        help="Password for the teacher interface. Required, unless it is "
+             f"given in the {PASSWORD_ENV_VAR} environment variable.")
     parser.add_argument(
         "--schedule-file", default="schedule.csv",
         help="CSV file with the class schedule")
@@ -768,7 +782,12 @@ if __name__ == "__main__":
         help="File to store the recorded attendance in")
     args = parser.parse_args()
 
-    CORRECT_PASSWORD = args.password
+    password = args.password or os.environ.get(PASSWORD_ENV_VAR, "")
+    if not password.strip():
+        parser.error(
+            "no teacher password set: pass --password or set the "
+            f"{PASSWORD_ENV_VAR} environment variable.")
+    CORRECT_PASSWORD = password
     QUIZ_DIR = args.quiz_dir
     ANSWER_COUNTS_FILE = args.answer_counts_file
     ATTENDANCE_FILE = args.attendance_file

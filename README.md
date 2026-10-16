@@ -13,6 +13,20 @@ incorrect answers meant to be presented to the class.
 python3 server.py --host 0.0.0.0 --port 5000 --quiz-dir quizzes --password your-password
 ```
 
+The teacher password is required; the server refuses to start without one. It
+can also be given in the `CLASS_QUIZ_PASSWORD` environment variable, which
+keeps it out of the process list and is the only way to set it when running
+under a WSGI server:
+
+```bash
+CLASS_QUIZ_PASSWORD=your-password python3 server.py --host 0.0.0.0 --port 5000
+```
+
+Set `CLASS_QUIZ_SECRET_KEY` as well to a fixed random string. It signs the
+session cookie that carries the CSRF tokens protecting the teacher forms;
+without it a new key is generated at every start, and teacher pages left open
+across a restart have to be reloaded once before a form can be submitted.
+
 The `quizzes` directory contains Markdown files with quizzes. The
 student interface is then available under `<root>/quiz/<quiz_id>` where
 `<quiz_id>` is the file name without the extension.
