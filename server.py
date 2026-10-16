@@ -425,12 +425,13 @@ def attendance_form(key: str) -> Tuple[str, int]:
             "This check-in link is not valid.", 404)
 
     if key in attendance_records:
+        # Anyone can try a key, so the page must not say which student used
+        # it; the time is enough for the owner to recognise their own check-in.
         record = attendance_records[key]
         return attendance_message(
             "✗", "Link already used",
             "This check-in link has already been used.", 410,
-            detail=(f"Used by {record.name} on "
-                    f"{record.time:%Y-%m-%d %H:%M}."))
+            detail=f"Used on {record.time:%Y-%m-%d %H:%M}.")
 
     open_slots = schedule.open_slots(now)
     if not open_slots:
@@ -468,7 +469,7 @@ def attendance_checkin(key: str):
         return attendance_message(
             "✗", "Link already used",
             "This check-in link has already been used.", 410,
-            detail=f"Used by {record.name} on {record.time:%Y-%m-%d %H:%M}.")
+            detail=f"Used on {record.time:%Y-%m-%d %H:%M}.")
 
     name = flask.request.form.get("name", "").strip()
     login = normalize_login(flask.request.form.get("login", ""))
