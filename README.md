@@ -40,7 +40,19 @@ The page `<root>/timer/<quiz_id>?minutes=<minutes>` shows a page with a QR code
 leading to the student interface. After the specified time is over, it shows
 the answer statistics.
 
-Pinging `<root>/github_update` pulls the repository and reloads the quizzes.
+`<root>/github_update` pulls the repository and reloads the quizzes. Because
+it makes the server run `git`, it only accepts requests signed by GitHub:
+
+1. Generate a random secret, e.g., `openssl rand -hex 32`.
+2. Put it in the webhook on GitHub (*Settings* → *Webhooks* → *Secret*), with
+   the content type set to `application/json`.
+3. Start the server with the same value in `CLASS_QUIZ_GITHUB_SECRET`.
+
+Without the variable the endpoint answers 503 and does nothing, so an
+unconfigured hook cannot be triggered by anyone who knows the URL. A request
+whose signature does not match is answered with 403. There is deliberately no
+command-line option for the secret: command lines are visible to every user
+of the machine in the process list.
 
 ## Attendance tracking
 

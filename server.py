@@ -261,13 +261,52 @@ def timer(quiz_id: str) -> Tuple[str, int]:
             qr_code_url=f"../quiz/{quiz_id}"), 200
 
 
-# Called by a GitHub webhook, which cannot carry a token of ours. It is also
-# not authenticated at all, so anyone who knows the URL can trigger it; a
-# webhook secret would be the proper fix for that.
+# This endpoint makes the server run git, so it must be certain that the
+# request really comes from GitHub. GitHub signs every delivery with a secret
+# shared with the hook ("Secret" in the webhook settings): the signature is an
+# HMAC of the exact request body, so knowing the URL is not enough and the
+# body cannot be altered on the way. A CSRF token is no use here, as GitHub
+# has no way of sending one.
+GITHUB_SECRET_ENV_VAR = "CLASS_QUIZ_GITHUB_SECRET"
+# Only from the environment, never a command-line option: anyone with an
+# account on the machine can read a command line out of the process list.
+GITHUB_WEBHOOK_SECRET = os.environ.get(GITHUB_SECRET_ENV_VAR) or None
+
+
+def github_signature_ok(secret: str) -> bool:
+    expected = "sha256=" + hmac.new(
+        secret.encode("utf-8"), flask.request.get_data(),
+        hashlib.sha256).hexdigest()
+    sent = flask.request.headers.get("X-Hub-Signature-256", "")
+    return hmac.compare_digest(sent.encode("utf-8"), expected.encode("utf-8"))
+
+
 @app.route("/github_update", methods=["POST"])
 @csrf.exempt
 def github_update() -> Tuple[str, int]:
-    subprocess.run(["git", "pull"], check=False)
+    if not GITHUB_WEBHOOK_SECRET:
+        # Fail closed: an unconfigured hook is one anybody could trigger.
+        print(f"Refused /github_update: {GITHUB_SECRET_ENV_VAR} is not set.")
+        return "Updates over the web are not configured.", 503
+
+    if not github_signature_ok(GITHUB_WEBHOOK_SECRET):
+        print("Refused /github_update: bad or missing signature.")
+        return "Bad signature.", 403
+
+    # GitHub sends this once when the hook is created, to test it.
+    if flask.request.headers.get("X-GitHub-Event") == "ping":
+        return "", 200
+
+    # --ff-only, so a push that cannot be applied cleanly leaves the checkout
+    # as it was instead of stopping half-way through a merge.
+    pull = subprocess.run(
+        ["git", "pull", "--ff-only"], check=False,
+        capture_output=True, text=True)
+    if pull.returncode != 0:
+        # Shows up in the webhook's delivery log on GitHub.
+        print(f"git pull failed: {pull.stderr.strip()}")
+        return "git pull failed.", 500
+
     load_quizes()
     schedule.reload()
     key_store.reload()
