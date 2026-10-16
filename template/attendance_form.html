@@ -36,14 +36,13 @@
         <div class="mb-3">
             <label for="name" class="form-label">Name</label>
             <input type="text" class="form-control" id="name" name="name"
-                   value="{{ name }}" autocomplete="name" required>
+                   autocomplete="name" required>
         </div>
 
         <div class="mb-3">
             <label for="login" class="form-label">SIS login / UKČO</label>
             <input type="text" class="form-control" id="login" name="login"
-                   value="{{ login }}" autocapitalize="none"
-                   autocomplete="username" required>
+                   autocapitalize="none" autocomplete="username" required>
             <div class="form-text">
                 Your details are remembered in this browser for next time.
             </div>
@@ -52,6 +51,44 @@
         <button type="submit" class="btn btn-primary w-100">Confirm</button>
     </form>
 </div>
+
+<script>
+// The name and the SIS login are remembered in this browser's local storage.
+// A cookie was attached to every request to this server, so every other
+// application hosted here was told who the student is. Local storage is
+// never transmitted: the values leave the browser only when the student
+// submits this form.
+(function () {
+    var stored = {name: "student_name", login: "student_login"};
+
+    function get(key) {
+        try {
+            return window.localStorage.getItem(key);
+        } catch (e) {
+            return null;  // Private window, or storage turned off.
+        }
+    }
+
+    for (var id in stored) {
+        var input = document.getElementById(id);
+        var value = get(stored[id]);
+        if (input && !input.value && value) {
+            input.value = value;
+        }
+    }
+
+    document.querySelector("form").addEventListener("submit", function () {
+        for (var id in stored) {
+            var field = document.getElementById(id);
+            try {
+                window.localStorage.setItem(stored[id], field.value.trim());
+            } catch (e) {
+                // Nothing to remember by; the student types it again.
+            }
+        }
+    });
+})();
+</script>
 
 </body>
 </html>

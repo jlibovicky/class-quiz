@@ -383,8 +383,23 @@ def qa_results(session_id: str) -> Tuple[str, int]:
         session=qa_sessions[session_id]), 200
 
 
-COOKIE_MAX_AGE = 365 * 24 * 3600
 MAX_KEYS_PER_BATCH = 500
+
+# Earlier versions remembered the student's name and SIS login in cookies.
+# A cookie has no way of belonging to this app alone: the browser sent it with
+# every request to this server, so every other application hosted here saw who
+# the student was. The check-in form now keeps the two values in the browser's
+# local storage, which is never sent anywhere, and these leftover cookies are
+# expired the next time a student opens the form.
+SITE_WIDE_STUDENT_COOKIES = ("student_name", "student_login")
+
+
+def forget_site_wide_student_cookies(
+        response: flask.Response) -> flask.Response:
+    for cookie_name in SITE_WIDE_STUDENT_COOKIES:
+        if cookie_name in flask.request.cookies:
+            response.delete_cookie(cookie_name, path="/", samesite="Lax")
+    return response
 
 
 def attendance_message(
@@ -441,12 +456,11 @@ def attendance_form(key: str) -> Tuple[str, int]:
             "Your link has not been used up.", 200,
             detail=next_class_hint(now))
 
-    return flask.render_template(
-        "attendance_form.html",
-        key=key,
-        slots=open_slots,
-        name=flask.request.cookies.get("student_name", ""),
-        login=flask.request.cookies.get("student_login", "")), 200
+    # The form prefills itself from the browser's local storage; see
+    # forget_site_wide_student_cookies below for why not from a cookie.
+    response = flask.make_response(flask.render_template(
+        "attendance_form.html", key=key, slots=open_slots))
+    return forget_site_wide_student_cookies(response), 200
 
 
 # The check-in is authorised by the secret one-time key in the URL, not by
@@ -504,16 +518,11 @@ def attendance_checkin(key: str):
         other.lecture_code for other in attendance_records.values()
         if other.login == login and other.course_code == slot.course_code})
 
-    response = flask.make_response(flask.render_template(
+    return flask.render_template(
         "attendance_done.html",
         record=record,
         duplicate=previous is not None,
-        attended_count=attended_count))
-    for cookie_name, value in [
-            ("student_name", name), ("student_login", login)]:
-        response.set_cookie(
-            cookie_name, value, max_age=COOKIE_MAX_AGE, samesite="Lax")
-    return response
+        attended_count=attended_count)
 
 
 @app.route("/attendance")

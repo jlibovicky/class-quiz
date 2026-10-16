@@ -94,8 +94,10 @@ python3 make_attendance_keys.py 60 --batch "2026-10-01"
 ### Student interface
 
 The QR code leads to `<root>/attend/<key>`, which asks for the student's name
-and SIS login/UKČO. Both are stored in a cookie, so the fields are prefilled
-the next time. The confirmation page shows how many lectures of the course the
+and SIS login/UKČO. Both are kept in the browser's local storage, so the
+fields are prefilled the next time. They are deliberately not kept in a
+cookie: a cookie would be sent along with every request to the server,
+including requests to anything else hosted on the same domain. The confirmation page shows how many lectures of the course the
 student has attended so far.
 
 ### Teacher interface
