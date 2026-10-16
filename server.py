@@ -621,6 +621,26 @@ def attendance_manual_checkin():
         f"{slot.lecture_code} on {slot.date:%Y-%m-%d}.", ok=True)
 
 
+# A spreadsheet reads a cell that starts with one of these as a formula, so a
+# student who types "=..." into the name field would get it executed when the
+# downloaded attendance is opened in Excel. A leading apostrophe makes the
+# cell plain text; spreadsheets do not show it.
+CSV_FORMULA_PREFIXES = ("=", "+", "-", "@", "\t", "\r")
+
+
+def csv_safe(value: str) -> str:
+    """One CSV cell that no spreadsheet will take for a formula."""
+    text = str(value)
+    # Leading whitespace is ignored by some spreadsheets, so look past it.
+    if text.lstrip().startswith(CSV_FORMULA_PREFIXES):
+        return "'" + text
+    return text
+
+
+def csv_safe_row(values: list) -> list:
+    return [csv_safe(value) for value in values]
+
+
 @app.route("/attendance.csv")
 @auth.login_required
 def attendance_csv():
@@ -631,11 +651,11 @@ def attendance_csv():
         "timestamp", "key", "manual"])
     for record in sorted(
             attendance_records.values(), key=lambda r: r.timestamp):
-        writer.writerow([
+        writer.writerow(csv_safe_row([
             record.login, record.name, record.course_code,
             record.lecture_code, record.slot_id,
             record.time.isoformat(timespec="seconds"), record.key,
-            "1" if record.manual else ""])
+            "1" if record.manual else ""]))
     return flask.Response(
         output.getvalue(), mimetype="text/csv",
         headers={
