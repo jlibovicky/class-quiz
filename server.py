@@ -274,7 +274,11 @@ def github_update() -> Tuple[str, int]:
     return ("", 200)
 
 
+# Starting a session is a teacher action: the form for it sits on the
+# password-protected quiz listing, and the student pages only ever join a
+# session that already exists.
 @app.route("/create_qa_session", methods=["POST"])
+@auth.login_required
 def create_qa_session() -> Tuple[str, int]:
     session_id = flask.request.form["session_id"]
 
