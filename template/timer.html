@@ -17,9 +17,12 @@ MathJax = {
 <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
 <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+<script src="{{ root }}clicker.js"></script>
 <script>
     var minutes = 5;
     var seconds = 0;
+    var running = false;
+    var started_at = 0;
 
     var url_minutes = location.search.split('minutes=')[1]
     if (url_minutes) {
@@ -53,6 +56,8 @@ MathJax = {
         });
 
         $("#start").click(function() {
+            running = true;
+            started_at = Date.now();
             $("#timer").show();
             $("#skip").show();
             var timer = setInterval(function() {
@@ -75,6 +80,19 @@ MathJax = {
         });
 
 	$("#url").text(quiz_url);
+
+        // The timer is run from a clicker during the class: the first press
+        // starts it, a press once it runs moves on without waiting for the
+        // rest of the time (the same as the "Skip" link).
+        Clicker.listen(function() {
+            if (!running) {
+                $("#start").click();
+            } else if (Date.now() - started_at > 2000) {
+                // Starting and skipping on two quick presses of the same
+                // button would be a surprise, so skipping waits a moment.
+                window.location.href = "{{redirect_url}}";
+            }
+        }, function() {});
 
     {% if start_directly %}
         $("#start").click();

@@ -169,6 +169,12 @@ def inject_relative_root() -> dict:
 def script():
     return flask.send_file("script.js")
 
+
+@app.route("/clicker.js")
+def clicker_script():
+    return flask.send_file("clicker.js")
+
+
 @app.route("/quiz")
 @app.route("/answer_stats")
 @app.route("/timer")
